@@ -1,0 +1,149 @@
+@import "variables";
+
+#cursor {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-color: $black;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.top-details {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 20px;
+}
+
+.header {
+  margin-top: 70px;
+  max-height: 150px;
+  max-width: 1260px;
+
+  padding-inline: 45px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__text {
+    color: $yellow;
+    width: min-content;
+    font-weight: 400;
+    font-size: 70px;
+    line-height: 74px;
+    text-transform: uppercase;
+  }
+}
+
+.swiper {
+  height: 500px;
+  width: 100%;
+
+  &-slide {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.swiper-slide-active .swiper__slide {
+      width: 380px;
+      height: 380px;
+
+      & .swiper__slide-step {
+        font-size: 34px;
+        line-height: 40px;
+      }
+
+      & .swiper__slide-current {
+        display: block;
+        font-size: 80px;
+        line-height: 90px;
+        visibility: visible;
+        position: relative;
+      }
+
+      & .swiper__slide-goal {
+        font-size: 34px;
+        line-height: 40px;
+        width: max-content;
+      }
+
+      //&::after {
+      //  opacity: 1;
+      //  transition: $transition03;
+      //}
+    }
+  }
+
+  &__slide {
+    text-align: center;
+    width: 270px;
+    height: 270px;
+    border: 6px solid $yellow;
+    border-radius: 60%;
+    background-color: $black;
+
+    transition: $transition03;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &-step {
+      text-transform: uppercase;
+      font-size: 24px;
+      line-height: 34px;
+      color: $white;
+      transition: $transition01;
+    }
+
+    &-current {
+      font-size: 42px;
+      line-height: 48px;
+      visibility: hidden;
+      position: absolute;
+      text-transform: uppercase;
+      color: $green;
+      transition: $transition01;
+    }
+
+    &-goal {
+      text-transform: uppercase;
+      font-size: 42px;
+      line-height: 48px;
+      color: $yellow;
+      width: min-content;
+      transition: $transition01;
+    }
+
+    //&::after {
+    //  content: url("../../../assets/images/rays.svg");
+    //  display: block;
+    //  width: 480px;
+    //  height: 480px;
+    //  z-index: -10;
+    //  opacity: 0;
+    //  transition: $transition03;
+    //}
+  }
+}
+
+@media (pointer: none), (pointer: coarse) {
+  #cursor {
+    display: none;
+  }
+}
+
+
