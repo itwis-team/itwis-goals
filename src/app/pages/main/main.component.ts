@@ -9,9 +9,10 @@ import {SwiperOptions} from "swiper";
 export class MainComponent implements OnInit {
 
   @ViewChild('cursor') cursor!: ElementRef
+  @ViewChild('swiper', {static: false}) swiperElement!: any;
 
   config: SwiperOptions = {
-    slidesPerView: 2.5,
+    slidesPerView: 4,
     spaceBetween: 25,
     centeredSlides: true,
   }
@@ -24,13 +25,19 @@ export class MainComponent implements OnInit {
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e: any) {
-    if (!e) return;
-
     let pos = {
       x: e.pageX,
       y: e.pageY
     };
+
     this.cursor.nativeElement.style.left = pos.x - 60 + 'px'
     this.cursor.nativeElement.style.top = pos.y - 60 + 'px'
+  }
+
+  @HostListener('document:wheel', ['$event'])
+  onScroll(e: any) {
+    e.wheelDeltaY > 0
+      ? this.swiperElement.swiper.slideNext()
+      : this.swiperElement.swiper.slidePrev();
   }
 }
