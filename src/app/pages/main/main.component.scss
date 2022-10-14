@@ -47,46 +47,96 @@
 }
 
 .swiper {
-  height: 500px;
+  height: 570px;
   width: 100%;
+
+  &__badge {
+    opacity: 0;
+    position: absolute;
+    right: -50px;
+    top: 0;
+    transition: $transition03;
+  }
+
+  &__rays {
+    width: 480px;
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  &__text {
+    font-size: 0;
+    color: $green;
+    text-align: center;
+    width: max-content;
+    visibility: hidden;
+    transition: $transition03;
+  }
 
   &-slide {
     position: relative;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
 
-    &.swiper-slide-active .swiper__slide {
-      width: 380px;
-      height: 380px;
-
-      & .swiper__slide-step {
-        font-size: 34px;
-        line-height: 40px;
+    &.swiper-slide-active {
+      & .swiper__badge {
+        opacity: 1;
       }
 
-      & .swiper__slide-current {
-        display: block;
+      & .swiper__rays {
+        background-image: url("../../../assets/images/rays.svg");
+      }
+
+      & .swiper__text {
+        visibility: visible;
         font-size: 80px;
         line-height: 90px;
-        visibility: visible;
-        position: relative;
       }
 
-      & .swiper__slide-goal {
-        font-size: 34px;
-        line-height: 40px;
-        width: max-content;
-      }
+      & .swiper__circle {
+        width: 380px;
+        height: 380px;
 
-      &::after {
-        opacity: 1;
-        transition: $transition03;
+        & .swiper__circle-step {
+          font-size: 34px;
+          line-height: 40px;
+        }
+
+        & .swiper__circle-current {
+          display: block;
+          font-size: 80px;
+          line-height: 90px;
+          visibility: visible;
+          position: relative;
+        }
+
+        & .swiper__circle-goal {
+          font-size: 34px;
+          line-height: 40px;
+          width: max-content;
+        }
+
+        &::after {
+          opacity: 1;
+          transition: $transition03;
+        }
       }
     }
   }
 
-  &__slide {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__circle {
     text-align: center;
     width: 270px;
     height: 270px;
@@ -126,19 +176,6 @@
       color: $yellow;
       width: min-content;
       transition: $transition015;
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      background-image: url("../../../assets/images/rays.svg");
-      display: block;
-      width: 480px;
-      height: 480px;
-      z-index: -10;
-      opacity: 0;
-      transition: $transition03;
     }
   }
 }
