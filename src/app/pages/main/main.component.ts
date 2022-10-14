@@ -36,7 +36,7 @@ export class MainComponent implements OnInit {
 
   @HostListener('document:wheel', ['$event'])
   onScroll(e: any) {
-    e.wheelDeltaY > 0
+    e.wheelDeltaY < 0
       ? this.swiperElement.swiper.slideNext()
       : this.swiperElement.swiper.slidePrev();
   }
