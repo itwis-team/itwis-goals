@@ -25,6 +25,20 @@
   left: 20px;
 }
 
+.cat {
+  position: absolute;
+  pointer-events: none;
+  bottom: 0;
+  left: 20px;
+}
+
+.portal {
+  position: absolute;
+  pointer-events: none;
+  bottom: 0;
+  right: 0;
+}
+
 .header {
   margin-top: 70px;
   max-height: 150px;
@@ -69,7 +83,9 @@
   }
 
   &__text {
-    font-size: 0;
+    font-size: 80px;
+    line-height: 90px;
+    opacity: 0;
     color: $green;
     text-align: center;
     width: max-content;
@@ -83,6 +99,7 @@
     justify-content: center;
     align-items: stretch;
 
+    //--------------All active elements perform here----------------------
     &.swiper-slide-active {
       & .swiper__badge {
         opacity: 1;
@@ -94,8 +111,7 @@
 
       & .swiper__text {
         visibility: visible;
-        font-size: 80px;
-        line-height: 90px;
+        opacity: 1;
       }
 
       & .swiper__circle {

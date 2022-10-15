@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-import { MainComponent } from './pages/main/main.component';
+import {AppComponent} from './app.component';
+import {MainComponent} from './pages/main/main.component';
 import {MainModule} from "./pages/main/main.module";
 import {NgxUsefulSwiperModule} from "ngx-useful-swiper";
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent
+    MainComponent,
   ],
   imports: [
     BrowserModule,
@@ -19,4 +19,5 @@ import {NgxUsefulSwiperModule} from "ngx-useful-swiper";
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

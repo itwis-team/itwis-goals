@@ -1,5 +1,7 @@
 import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {SwiperOptions} from "swiper";
+import {GoalItem} from "../../types/GoalItem";
+import {allItems, currentAmount} from "../../data/data";
 
 @Component({
   selector: 'app-main',
@@ -10,6 +12,9 @@ export class MainComponent implements OnInit {
 
   @ViewChild('cursor') cursor!: ElementRef
   @ViewChild('swiper', {static: false}) swiperElement!: any;
+
+  items: GoalItem[] = allItems
+  current: number = currentAmount
 
   config: SwiperOptions = {
     slidesPerView: 4,
