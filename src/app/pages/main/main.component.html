@@ -38,10 +38,6 @@
               >
                 цЕЛЬ: {{item.goal | currency: 'USD' : true: '1.0-0'}}
               </p>
-              <!--              TODO:-->
-              <!--              wave добавляю только в текущую цель-->
-              <!--              все до идут с bg-->
-              <!--              все после идут пустые-->
 
               <div class="wave" *ngIf="item.current" [@wave]="{value:runAnimation}"
                    (@wave.done)="runAnimation = !runAnimation"></div>
