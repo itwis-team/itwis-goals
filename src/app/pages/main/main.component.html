@@ -16,10 +16,17 @@
       <div class="swiper-slide" *ngFor="let item of preparedItems">
         <div class="swiper__content">
           <div class="swiper__rays">
-            <img class="swiper__badge" alt="" [src]="item.badge"/>
+            <img
+              *ngIf="!item.complete"
+              class="swiper__badge"
+              alt=""
+              [src]="item.badge"
+            />
             <img
               *ngIf="item.complete"
-              class="swiper__check" alt="" src="assets/images/check.svg"
+              class="swiper__check"
+              alt=""
+              src="assets/images/check.svg"
             />
             <div
               [class.background-fill]="item.complete"
