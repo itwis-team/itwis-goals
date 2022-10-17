@@ -2,19 +2,23 @@ import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/c
 import {SwiperOptions} from "swiper";
 import {GoalItem} from "../../types/GoalItem";
 import {allItems, currentAmount} from "../../data/data";
+import {wave} from "../../helpers/animations";
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+  styleUrls: ['./main.component.scss'],
+  animations: [wave]
 })
 export class MainComponent implements OnInit {
 
   @ViewChild('cursor') cursor!: ElementRef
   @ViewChild('swiper', {static: false}) swiperElement!: any;
 
-  items: GoalItem[] = allItems
+  preparedItems!: GoalItem[];
   current: number = currentAmount
+
+  runAnimation: boolean = true;
 
   config: SwiperOptions = {
     slidesPerView: 4,
@@ -26,6 +30,17 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.preparedItems = allItems.map(item => {
+      if (item.goal <= this.current) {
+        item.complete = true
+      }
+
+      if (item.prevGoal <= this.current && this.current < item.goal) {
+        item.current = true
+      }
+
+      return item;
+    })
   }
 
   @HostListener('document:mousemove', ['$event'])

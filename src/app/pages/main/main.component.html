@@ -13,14 +13,38 @@
   <swiper #swiper class="swiper" [config]="config">
     <div class="swiper-wrapper">
 
-      <div class="swiper-slide" *ngFor="let item of items">
+      <div class="swiper-slide" *ngFor="let item of preparedItems">
         <div class="swiper__content">
           <div class="swiper__rays">
-            <img class="swiper__badge" alt="123" [src]="item.badge"/>
-            <div class="swiper__circle">
+            <img class="swiper__badge" alt="" [src]="item.badge"/>
+            <img
+              *ngIf="item.complete"
+              class="swiper__check" alt="" src="assets/images/check.svg"/>
+            <div
+              [class.background-fill]="item.complete"
+              class="swiper__circle"
+            >
               <h2 class="swiper__circle-step">{{item.step}}</h2>
-              <p class="swiper__circle-current">{{current | currency: 'USD' : true: '1.0-0'}}</p>
-              <p class="swiper__circle-goal">цЕЛЬ: {{item.goal | currency: 'USD' : true: '1.0-0'}}</p>
+              <p
+                *ngIf="!item.complete"
+                class="swiper__circle-current"
+              >
+                {{current | currency: 'USD' : true: '1.0-0'}}
+              </p>
+
+              <p
+                [class.completed-goal]="item.complete"
+                class="swiper__circle-goal"
+              >
+                цЕЛЬ: {{item.goal | currency: 'USD' : true: '1.0-0'}}
+              </p>
+              <!--              TODO:-->
+              <!--              wave добавляю только в текущую цель-->
+              <!--              все до идут с bg-->
+              <!--              все после идут пустые-->
+
+              <div class="wave" *ngIf="item.current" [@wave]="{value:runAnimation}"
+                   (@wave.done)="runAnimation = !runAnimation"></div>
             </div>
           </div>
 
@@ -31,10 +55,6 @@
       </div>
     </div>
   </swiper>
-
-  <footer class="footer">
-    footer
-  </footer>
 
   <img class="cat" src="assets/images/cat.svg" alt="cat">
   <img class="portal" src="assets/images/portal.svg" alt="portal">
