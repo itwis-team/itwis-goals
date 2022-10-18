@@ -2,7 +2,7 @@
 
 #cursor {
   position: absolute;
-  width: 120px;
+  width: auto;
   height: 120px;
   pointer-events: none;
   z-index: 1000;
@@ -30,6 +30,8 @@
   pointer-events: none;
   bottom: 0;
   left: 20px;
+  width: auto;
+  height: 35vh;
 }
 
 .portal {
@@ -37,6 +39,8 @@
   pointer-events: none;
   bottom: 0;
   right: 0;
+  height: 25vh;
+  width: auto;
 }
 
 .header {
@@ -64,53 +68,6 @@
   height: 100%;
   width: 100%;
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  &__check {
-    opacity: 0;
-    position: absolute;
-    right: 30px;
-    top: 65%;
-    transition: $transition03;
-  }
-
-  &__badge {
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: $transition03;
-  }
-
-  &__rays {
-    position: relative;
-    width: 480px;
-    height: 480px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -100;
-  }
-
-  &__text {
-    font-size: 80px;
-    line-height: 90px;
-    width: 250%;
-    opacity: 0;
-    color: $green;
-    text-align: center;
-    text-transform: capitalize;
-    visibility: hidden;
-    transition: $transition03;
-  }
-
   &-slide {
     position: relative;
     display: flex;
@@ -137,8 +94,10 @@
       }
 
       & .swiper__circle {
-        width: 380px;
-        height: 380px;
+        max-width: 380px;
+        max-height: 380px;
+        width: 65vh;
+        height: 65vh;
 
         & .swiper__circle-step {
           font-size: 34px;
@@ -175,12 +134,63 @@
     }
   }
 
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__rays {
+    position: relative;
+    width: 480px;
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -100;
+  }
+
+  &__text {
+    font-size: 80px;
+    line-height: 90px;
+    width: 250%;
+    opacity: 0;
+    color: $green;
+    text-align: center;
+    text-transform: capitalize;
+    visibility: hidden;
+    transition: $transition03;
+  }
+
+  &__badge {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: $transition03;
+  }
+
+  &__check {
+    opacity: 0;
+    position: absolute;
+    right: 30px;
+    top: 65%;
+    transition: $transition03;
+  }
+
   &__circle {
     overflow: hidden;
     position: relative;
     text-align: center;
-    width: 270px;
-    height: 270px;
+    width: 50vh;
+    height: 50vh;
+
+    max-width: 270px;
+    max-height: 270px;
     border: 6px solid $yellow;
     border-radius: 60%;
     background-color: $black;
@@ -230,12 +240,6 @@
   }
 }
 
-@media (pointer: none), (pointer: coarse) {
-  #cursor {
-    display: none;
-  }
-}
-
 .background-fill {
   background-color: $purple;
 }
@@ -248,5 +252,15 @@
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+@media (pointer: none), (pointer: coarse) {
+  #cursor {
+    display: none;
+  }
+}
+
+@media (max-width: 1700px) {
+
 }
 
