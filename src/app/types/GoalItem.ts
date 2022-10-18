@@ -6,4 +6,5 @@ export interface GoalItem {
   title: string,
   complete: boolean,
   current: boolean
+  percent?: number
 }

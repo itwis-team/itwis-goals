@@ -63,7 +63,6 @@
 .swiper {
   height: 100%;
   width: 100%;
-  margin-top: 40px;
 
   &__content {
     display: flex;
@@ -152,6 +151,7 @@
           line-height: 90px;
           visibility: visible;
           position: relative;
+          transition: $transition03;
         }
 
         & .swiper__circle-goal {
@@ -193,6 +193,10 @@
     justify-content: center;
     align-items: center;
 
+    &.background-fill {
+      border-color: $green;
+    }
+
     &-step {
       text-transform: uppercase;
       font-size: 24px;
@@ -232,20 +236,17 @@
   }
 }
 
-
 .background-fill {
   background-color: $purple;
 }
 
 .wave {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTc0LjQ3MDY0IDQ2LjM0NTk0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndhdmUtZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIwJSIgeTI9IjAlIj4KICAgICAgPHN0b3Agc3R5bGU9InN0b3AtY29sb3I6IzAwMDAzZjsiIG9mZnNldD0iMCIgaWQ9ImRlZXAtb2NlYW4iIC8+CiAgICAgIDxzdG9wIHN0eWxlPSJzdG9wLWNvbG9yOiM0ZTZmZmY7IiBvZmZzZXQ9IjEiIGlkPSJzaGFsbG93LW9jZWFuIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHBhdGggc3R5bGU9ImZpbGw6dXJsKCN3YXZlLWdyYWRpZW50KTtmaWxsLXJ1bGU6ZXZlbm9kZCIgZD0ibSAwLDExLjM4NDQ4IGMgMCwwIDIxLjEzMzg1MSwxMS4zOTUzMSA0My42MTc2NjEsMTEuMzg0NDEgQyA2Ni4xMDE0NzEsMjIuNzU3OTkgMTA3Ljk2ODU2LDAuMDMyNjIgMTMwLjUwOCw3ZS01IGMgMjIuNTM5NDQsLTAuMDMyNSA0My45NjI2NCwxMS4zODQ0MSA0My45NjI2NCwxMS4zODQ0MSBWIDQ2LjM0NTk0IEggMCBaIiAvPgo8L3N2Zz4=");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDUwIiBoZWlnaHQ9IjM3MCIgdmlld0JveD0iMCAwIDQ1MCAzNzAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0wIDM3MEg0NTBWMTYuODI3N0M0NTAgMTYuODI3NyAzOTcgMCAzNDYgMEMyOTUgMCAyNzQgMyAyMTguNSAxNS41QzE3Mi4wOCAyNS45NTUxIDE0MC41IDMyIDk0IDMyQzQ3LjUgMzIgMCAxNi44Mjc3IDAgMTYuODI3N1YzNzBaIiBmaWxsPSIjNEQzMTVBIi8+Cjwvc3ZnPgo=");
   background-repeat: repeat-x;
-  background-size: contain;
-  background-position: bottom;
+  background-size: 450px auto;
   position: absolute;
-  bottom: 0;
   width: 100%;
-  height: 500px;
+  height: 100%;
   z-index: -1;
 }
 

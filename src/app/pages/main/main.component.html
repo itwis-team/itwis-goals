@@ -47,7 +47,7 @@
                 цЕЛЬ: {{item.goal | currency: 'USD' : true: '1.0-0'}}
               </p>
 
-              <div class="wave" *ngIf="item.current" [@wave]="{value:runAnimation}"
+              <div class="wave" *ngIf="item.current" [@wave]="{value:runAnimation, params: {top: item.percent + '%'}}"
                    (@wave.done)="runAnimation = !runAnimation"></div>
             </div>
           </div>
@@ -62,7 +62,6 @@
 
   <img class="cat" src="assets/images/cat.svg" alt="cat">
   <img class="portal" src="assets/images/portal.svg" alt="portal">
-
 </div>
 
 <img id="cursor" src="assets/images/skroll.svg" alt="" #cursor/>

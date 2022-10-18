@@ -3,13 +3,17 @@ import {animate, keyframes, style, transition, trigger} from '@angular/animation
 export const wave = trigger('wave', [
   transition('* => *', [
     animate(
-      3000,
+      1500,
       keyframes([
-        style({"background-position-x": 0}),
         style({
-          "background-position-x": "-500px"
+          "background-position-x": "0",
+          "top": "{{ top }}",
+        }),
+        style({
+          "background-position-x": "-450px",
+          "top": "{{ top }}",
         }),
       ])
     ),
-  ]),
+  ], {params: {top: '0'}}),
 ]);

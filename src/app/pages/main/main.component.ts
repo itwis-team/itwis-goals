@@ -37,6 +37,7 @@ export class MainComponent implements OnInit {
 
       if (item.prevGoal <= this.current && this.current < item.goal) {
         item.current = true
+        item.percent = this.getWavePercent(item)
       }
 
       return item;
@@ -59,5 +60,23 @@ export class MainComponent implements OnInit {
     e.wheelDeltaY < 0
       ? this.swiperElement.swiper.slideNext()
       : this.swiperElement.swiper.slidePrev();
+  }
+
+  getWavePercent(item: GoalItem) {
+    //lower pos
+    if (this.getCurrentPercent(item) <= 15) {
+      return 85
+    }
+
+    //higher pos
+    if (this.getCurrentPercent(item) >= 95) {
+      return 5
+    }
+
+    return this.getCurrentPercent(item)
+  }
+
+  getCurrentPercent(item: GoalItem) {
+    return (this.current - item.prevGoal) / (item.goal - item.prevGoal) * 100
   }
 }
