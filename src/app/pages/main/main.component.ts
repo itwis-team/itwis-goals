@@ -21,8 +21,7 @@ export class MainComponent implements OnInit {
   runAnimation: boolean = true;
 
   config: SwiperOptions = {
-    slidesPerView: 1.7,
-    // spaceBetween: 25,
+    slidesPerView: 2,
     centeredSlides: true,
     breakpoints: {
       '2400': {
@@ -38,6 +37,12 @@ export class MainComponent implements OnInit {
         slidesPerView: 3
       },
       '800': {
+        slidesPerView: 2
+      },
+      '750': {
+        slidesPerView: 2.5
+      },
+      '500': {
         slidesPerView: 2
       },
     }

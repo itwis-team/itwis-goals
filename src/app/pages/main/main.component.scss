@@ -18,7 +18,7 @@
   position: relative;
 }
 
-.top-details {
+.explosion {
   position: absolute;
   pointer-events: none;
   top: 0;
@@ -140,7 +140,6 @@
     }
   }
 
-
   &__content {
     display: flex;
     flex-direction: column;
@@ -162,12 +161,12 @@
 
   &__text {
     font-size: 80px;
-    line-height: 90px;
-    width: 250%;
+    line-height: 70px;
+    width: 220%;
     opacity: 0;
     color: $green;
     text-align: center;
-    text-transform: capitalize;
+    text-transform: uppercase;
     visibility: hidden;
     transition: $transition03;
   }
@@ -269,8 +268,119 @@
 @media (max-width: 1700px) {
   .swiper {
     &__text {
-
+      font-size: 50px;
+      line-height: 50px;
+      width: 150%;
     }
   }
 }
+
+@media (max-width: 1300px) {
+  .explosion {
+    left: -50px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .cat, .portal {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .swiper {
+    &__rays {
+      width: 360px;
+      height: 360px;
+    }
+
+    &-slide {
+      &.swiper-slide-active {
+        & .swiper__circle {
+          max-width: 300px;
+          max-height: 300px;
+
+          & .swiper__circle-step {
+            font-size: 28px;
+            line-height: 35px;
+          }
+
+          & .swiper__circle-current {
+            display: block;
+            font-size: 60px;
+            line-height: 70px;
+            visibility: visible;
+            position: relative;
+            transition: $transition03;
+          }
+
+          & .swiper__circle-goal {
+            font-size: 34px;
+            line-height: 40px;
+            width: max-content;
+
+            &.completed-goal {
+              font-size: 50px;
+              line-height: 50px;
+              color: $green;
+              width: min-content;
+            }
+          }
+        }
+      }
+    }
+
+    &__check {
+      width: 100px;
+      height: 100px;
+      right: 30px;
+      top: 70%;
+      transition: $transition03;
+    }
+
+    &__circle {
+      max-width: 200px;
+      max-height: 200px;
+
+      &-step {
+        text-transform: uppercase;
+        font-size: 24px;
+        line-height: 34px;
+        color: $white;
+        transition: $transition015;
+      }
+
+      &-current {
+        font-size: 35px;
+        line-height: 40px;
+        visibility: hidden;
+        position: absolute;
+        text-transform: uppercase;
+        color: $green;
+        transition: $transition015;
+      }
+
+      &-goal {
+        text-transform: uppercase;
+        font-size: 35px;
+        line-height: 40px;
+        color: $yellow;
+        width: min-content;
+        transition: $transition015;
+
+        &.completed-goal {
+          color: $green;
+        }
+      }
+    }
+
+    &__badge {
+      width: 120px;
+      height: 120px;
+    }
+
+  }
+}
+
+
 
