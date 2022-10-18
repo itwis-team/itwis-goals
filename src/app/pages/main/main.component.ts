@@ -21,7 +21,7 @@ export class MainComponent implements OnInit {
   runAnimation: boolean = true;
 
   config: SwiperOptions = {
-    slidesPerView: 2,
+    slidesPerView: 1.4,
     centeredSlides: true,
     breakpoints: {
       '2400': {
@@ -42,8 +42,11 @@ export class MainComponent implements OnInit {
       '750': {
         slidesPerView: 2.5
       },
-      '500': {
+      '600': {
         slidesPerView: 2
+      },
+      '430': {
+        slidesPerView: 1.6
       },
     }
   }
@@ -87,18 +90,18 @@ export class MainComponent implements OnInit {
   getWavePercent(item: GoalItem) {
     //lower pos
     if (this.getCurrentPercent(item) <= 15) {
-      return 85
+      return 5
     }
 
     //higher pos
     if (this.getCurrentPercent(item) >= 95) {
-      return 5
+      return 85
     }
 
     return this.getCurrentPercent(item)
   }
 
   getCurrentPercent(item: GoalItem) {
-    return (this.current - item.prevGoal) / (item.goal - item.prevGoal) * 100
+    return 100 - (this.current - item.prevGoal) / (item.goal - item.prevGoal) * 100
   }
 }

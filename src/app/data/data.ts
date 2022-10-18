@@ -1,11 +1,11 @@
 import {GoalItem} from "../types/GoalItem";
 
-export let currentAmount = 230000;
+export let currentAmount = 199999.2;
 
 export let allItems: GoalItem[] = [
   {
     step: "ЭТАП 1",
-    prevGoal: 0,
+    prevGoal: 190000,
     goal: 200000,
     badge: "assets/images/vrclub.svg",
     title: "Идём в VR клуб",
