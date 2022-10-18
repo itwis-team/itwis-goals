@@ -64,8 +64,14 @@
   }
 }
 
-.swiper {
+.content {
+  display: flex;
+  align-items: center;
   height: 100%;
+  width: 100%;
+}
+
+.swiper {
   width: 100%;
 
   &-slide {
@@ -261,6 +267,10 @@
 }
 
 @media (max-width: 1700px) {
+  .swiper {
+    &__text {
 
+    }
+  }
 }
 
