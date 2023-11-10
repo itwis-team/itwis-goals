@@ -1,275 +1,357 @@
 @import "variables";
 
-#cursor {
-  position: absolute;
-  width: auto;
-  height: 120px;
-  pointer-events: none;
-  z-index: 1000;
-}
-
 .container {
   width: 100vw;
   height: 100vh;
-  background-color: $black;
   align-items: center;
   display: flex;
   flex-direction: column;
   position: relative;
-}
 
-.explosion {
-  position: absolute;
-  pointer-events: none;
-  top: 0;
-  left: 20px;
-}
-
-.cat {
-  position: absolute;
-  pointer-events: none;
-  bottom: 0;
-  left: 20px;
-  width: auto;
-  height: 35vh;
-  max-height: 250px;
-}
-
-.portal {
-  position: absolute;
-  pointer-events: none;
-  bottom: 0;
-  right: 0;
-  height: 25vh;
-  width: auto;
-  max-width: 300px;
-  max-height: 300px;
-}
-
-.header {
-  margin-top: 70px;
-  max-height: 150px;
-  max-width: 1260px;
-
-  padding-inline: 45px;
-  width: 100vw;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &__text {
-    color: $yellow;
-    width: min-content;
-    font-weight: 400;
-    font-size: 70px;
-    line-height: 74px;
-    text-transform: uppercase;
-  }
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-
-.swiper {
-  width: 100%;
-
-  &-slide {
-    position: relative;
+  .header {
+    position: absolute;
+    top: 0;
     display: flex;
-    justify-content: center;
-    align-items: stretch;
+    justify-content: space-between;
+    padding-top: 56px;
+    padding-right: 64px;
+    padding-left: 64px;
+    max-height: 150px;
+    width: 100vw;
 
-    //--------------All active elements perform here----------------------
-    &.swiper-slide-active {
-      & .swiper__badge {
-        opacity: 1;
-      }
+    &__text {
+      color: $black;
+      width: min-content;
+      font-weight: 400;
+      font-size: 32px;
+      line-height: 38px;
+    }
+  }
 
-      & .swiper__check {
-        opacity: 1;
-      }
+  .content {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100vw;
 
-      & .swiper__rays {
-        background-image: url("../../../assets/images/rays.svg");
-      }
+    .swiper {
+      position: relative;
+      width: 100%;
+      height: 100%;
 
-      & .swiper__text {
-        visibility: visible;
-        opacity: 1;
-      }
+      &-slide {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
 
-      & .swiper__circle {
-        max-width: 380px;
-        max-height: 380px;
-        width: 65vh;
-        height: 65vh;
+        //--------------All active elements perform here----------------------
+        &.swiper-slide-active {
+          & .swiper__badge {
+            opacity: 1;
+          }
 
-        & .swiper__circle-step {
-          font-size: 34px;
-          line-height: 40px;
-        }
+          & .swiper__check {
+            opacity: 1;
+          }
 
-        & .swiper__circle-current {
-          display: block;
-          font-size: 80px;
-          line-height: 90px;
-          visibility: visible;
-          position: relative;
-          transition: $transition03;
-        }
+          & .swiper__rays {
+            background-image: url("../../../assets/images/rays.svg");
+          }
 
-        & .swiper__circle-goal {
-          font-size: 34px;
-          line-height: 40px;
-          width: max-content;
+          & .swiper__text {
+            visibility: visible;
+            opacity: 1;
+          }
 
-          &.completed-goal {
-            font-size: 60px;
-            line-height: 66px;
-            color: $green;
-            width: min-content;
+          & .swiper__circle {
+            max-width: 380px;
+            max-height: 380px;
+            width: 65vh;
+            height: 65vh;
+
+            & .swiper__circle-step {
+              font-size: 34px;
+              line-height: 40px;
+            }
+
+            & .swiper__circle-current {
+              display: block;
+              font-size: 80px;
+              line-height: 90px;
+              visibility: visible;
+              position: relative;
+              transition: $transition03;
+            }
+
+            & .swiper__circle-goal {
+              font-size: 34px;
+              line-height: 40px;
+              width: max-content;
+
+              &.completed-goal {
+                font-size: 60px;
+                line-height: 66px;
+                color: $green;
+                width: min-content;
+              }
+            }
+
+            &::after {
+              opacity: 1;
+              transition: $transition03;
+            }
           }
         }
+      }
 
-        &::after {
-          opacity: 1;
-          transition: $transition03;
+      &__content {
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        bottom: 0;
+        position: relative;
+        /*  display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px; */
+      }
+
+      &__slider {
+        top: -1.5vh;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        min-width: 808px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        max-height: 150px;
+        /* white-space: nowrap; */
+      }
+
+      &__slider-counter {
+        top: 56px;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+      }
+
+      &__slider-prev {
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+      }
+
+      #current {
+        font-size: 32px;
+        color: $black;
+      }
+
+      #total {
+        font-size: 24px;
+        color: $gray;
+      }
+
+      &__slider-text {
+        text-align: center;
+        font-size: 56px;
+      }
+
+      &__slider-next {
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+      }
+
+      .swiper-button-disabled {
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.5s ease-in-out;
+      }
+
+      &__slider {
+        width: 678px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      &__slider-counter {
+      }
+
+      &__slider-prev {
+      }
+
+      &__slider-next {
+      }
+
+      @-webkit-keyframes ticker {
+        0% {
+          -webkit-transform: translate3d(-25%, 0, 0);
+          transform: translate3d(-25%, 0, 0);
+          visibility: visible;
+        }
+        100% {
+          -webkit-transform: translateX(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+          visibility: visible;
+        }
+      }
+
+      @keyframes ticker {
+        0% {
+          -webkit-transform: translateX(-25%, 0, 0);
+          transform: translate3d(-25%, 0, 0);
+          visibility: visible;
+        }
+
+        100% {
+          -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+          visibility: visible;
+        }
+      }
+
+      .ticker-wrapper {
+        position: absolute;
+        top: 40vh;
+        width: 100%;
+        overflow: hidden;
+        padding-left: 0;
+        box-sizing: content-box;
+        display: block;
+        transform: rotate(-4deg);
+        z-index: 5;
+        .ticker {
+          margin-top: auto;
+          margin-bottom: auto;
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+          flex-direction: row;
+          align-items: center;
+          white-space: nowrap;
+          padding-right: 0;
+          box-sizing: content-box;
+
+          -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+          -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+          -webkit-animation-name: ticker;
+          animation-name: ticker;
+          -webkit-animation-duration: 10s;
+          animation-duration: 10s;
+
+          &__item {
+            display: inline-block;
+            text-align: center;
+            text-transform: uppercase;
+            padding-right: 50px;
+            color: $black;
+            p {
+              font-size: 120px;
+              line-height: 140px;
+            }
+
+            img {
+              height: 100%;
+            }
+          }
+        }
+      }
+
+      &__ratings {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        &-sleigh {
+          display: inline-block;
+          position: relative;
+          transform: translate(-100%, 3%);
+          transition: all 2s;
+        }
+        &-item {
+        }
+        &-counter {
+          display: none;
+          color: $red;
+          font-size: 14px;
+          line-height: 21px;
+        }
+        &-line {
+          width: 100%;
+          height: 24px;
+          background-color: $black;
+          span {
+            width: 50%;
+            display: block;
+            height: 100%;
+            background-color: $red;
+          }
+        }
+      }
+    }
+    .card__wrapper {
+      position: relative;
+      z-index: 10;
+      .card {
+        position: absolute;
+        display: flex;
+        margin: 35% 30%;
+        width: 360px;
+        height: 480px;
+        padding: 24px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        flex-shrink: 0;
+        background-color: $red;
+        border: 3px solid $yellow;
+        transform: rotate(2deg);
+        &__content {
+          color: rgba(242, 242, 242, 1);
+          &-now {
+            &-text {
+              text-align: center;
+              font-size: 28px;
+            }
+            &-amount {
+              font-size: 80px;
+              text-align: center;
+            }
+          }
+          &-divider {
+            margin: 24px 0 24px 0;
+            color: $yellow;
+            border-top: 3px solid $yellow;
+          }
+          &-goal {
+            &-text {
+              font-size: 34px;
+              text-align: center;
+            }
+          }
         }
       }
     }
   }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  &__rays {
-    position: relative;
-    width: 480px;
-    height: 480px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -100;
-  }
-
-  &__text {
-    margin-top: 10px;
-    font-size: 80px;
-    line-height: 70px;
-    width: 220%;
-    opacity: 0;
-    color: $green;
-    text-align: center;
-    text-transform: uppercase;
-    visibility: hidden;
-    transition: $transition03;
-  }
-
-  &__badge {
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: $transition03;
-  }
-
-  &__check {
-    opacity: 0;
-    position: absolute;
-    right: 30px;
-    top: 65%;
-    transition: $transition03;
-  }
-
-  &__circle {
-    overflow: hidden;
-    position: relative;
-    text-align: center;
-    width: 50vh;
-    height: 50vh;
-
-    max-width: 270px;
-    max-height: 270px;
-    border: 6px solid $yellow;
-    border-radius: 60%;
-    background-color: $black;
-    z-index: -10;
-
-    transition: $transition03;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    &.background-fill {
-      border-color: $green;
-    }
-
-    &-step {
-      text-transform: uppercase;
-      font-size: 24px;
-      line-height: 34px;
-      color: $white;
-      transition: $transition015;
-    }
-
-    &-current {
-      font-size: 42px;
-      line-height: 48px;
-      visibility: hidden;
-      position: absolute;
-      text-transform: uppercase;
-      color: $green;
-      transition: $transition015;
-    }
-
-    &-goal {
-      text-transform: uppercase;
-      font-size: 42px;
-      line-height: 48px;
-      color: $yellow;
-      width: min-content;
-      transition: $transition015;
-
-      &.completed-goal {
-        color: $green;
-      }
-    }
-  }
 }
 
-.background-fill {
-  background-color: $purple;
-}
-
-.wave {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDUwIiBoZWlnaHQ9IjM3MCIgdmlld0JveD0iMCAwIDQ1MCAzNzAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0wIDM3MEg0NTBWMTYuODI3N0M0NTAgMTYuODI3NyAzOTcgMCAzNDYgMEMyOTUgMCAyNzQgMyAyMTguNSAxNS41QzE3Mi4wOCAyNS45NTUxIDE0MC41IDMyIDk0IDMyQzQ3LjUgMzIgMCAxNi44Mjc3IDAgMTYuODI3N1YzNzBaIiBmaWxsPSIjNEQzMTVBIi8+Cjwvc3ZnPgo=");
-  background-repeat: repeat-x;
-  background-size: 450px auto;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-@media (pointer: none), (pointer: coarse) {
+/* @media (pointer: none), (p	ointer: coarse) {
   #cursor {
     display: none;
   }
-}
+} */
 
-@media (max-width: 1700px) {
+/* @media (max-width: 1700px) {
   .swiper {
     &__text {
       font-size: 50px;
@@ -286,7 +368,8 @@
 }
 
 @media (max-width: 1300px) {
-  .cat, .portal {
+  .cat,
+  .portal {
     display: none;
   }
 }
@@ -462,4 +545,4 @@
       line-height: 44px;
     }
   }
-}
+} */

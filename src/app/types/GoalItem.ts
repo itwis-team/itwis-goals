@@ -1,10 +1,14 @@
 export interface GoalItem {
-  step: string,
-  prevGoal: number
-  goal: number,
-  badge: string,
-  title: string,
-  complete: boolean,
-  current: boolean
-  percent?: number
+  step: string;
+  prevGoal: number;
+  goal: number;
+  leftImage: string;
+  rightImage: string;
+  badge: string;
+  bgcolor: string;
+  title: string;
+  ticker: string;
+  complete: boolean;
+  current: boolean;
+  percent?: number;
 }

@@ -1,52 +1,71 @@
-import {GoalItem} from "../types/GoalItem";
+import { GoalItem } from '../types/GoalItem';
 
-export let currentAmount = 199999.2;
+export let currentAmount = 228000;
 
 export let allItems: GoalItem[] = [
   {
-    step: "ЭТАП 1",
+    step: 'Этап 1',
     prevGoal: 190000,
-    goal: 200000,
-    badge: "assets/images/vrclub.svg",
-    title: "Идём в VR клуб",
-    complete: false,
-    current: false
-  },
-  {
-    step: "ЭТАП 2",
-    prevGoal: 200000,
-    goal: 230000,
-    badge: "assets/images/curling.svg",
-    title: "Идём в кёрлинг",
-    complete: false,
-    current: false
-  },
-  {
-    step: "ЭТАП 3",
-    prevGoal: 230000,
     goal: 240000,
-    badge: "assets/images/snowmobile.svg",
-    title: "катаемся на снегоходах",
+    leftImage: 'assets/images/cube_rubik.svg',
+    rightImage: 'assets/images/labyrinth.svg',
+    badge: 'assets/images/vrclub.svg',
+    bgcolor: 'rgba(242, 242, 242, 1)',
+    title: 'Квест-соревнование',
+    ticker: 'Квест',
     complete: false,
-    current: false
+    current: false,
   },
   {
-    step: "ЭТАП 4",
-    prevGoal: 240000,
+    step: 'Этап 2',
+    prevGoal: 200000,
     goal: 250000,
-    badge: "assets/images/tanai.svg",
-    title: "Едем на Танай кататься на лыжах на 3 дня ",
+    leftImage: 'assets/images/focus.svg',
+    rightImage: 'assets/images/laser_gun.svg',
+    badge: 'assets/images/curling.svg',
+    bgcolor: 'rgba(198, 255, 207, 1)',
+    title: 'Лазертаг',
+    ticker: 'Лазертаг',
     complete: false,
-    current: false
+    current: false,
   },
   {
-    step: "ЭТАП 5",
-    prevGoal: 250000,
+    step: 'Этап 3',
+    prevGoal: 230000,
     goal: 260000,
-    badge: "assets/images/sheregesh.svg",
-    title: "Едем в шерегеш кататься на лыжах на 3 дня ",
+    leftImage: 'assets/images/windsurfer.svg',
+    rightImage: 'assets/images/board.svg',
+    badge: 'assets/images/snowmobile.svg',
+    bgcolor: 'rgba(255, 211, 248, 1)',
+    title: 'Зимний кайтинг',
+    ticker: 'Кайтинг',
     complete: false,
-    current: false
+    current: false,
   },
-
-]
+  {
+    step: 'Этап 4',
+    prevGoal: 240000,
+    goal: 270000,
+    leftImage: 'assets/images/glasses.svg',
+    rightImage: 'assets/images/snowboarder.svg',
+    badge: 'assets/images/tanai.svg',
+    bgcolor: 'rgba(193, 233, 255, 1)',
+    title: 'Поездка в Шерегеш',
+    ticker: 'Шерегеш',
+    complete: false,
+    current: false,
+  },
+  {
+    step: 'Этап 5',
+    prevGoal: 250000,
+    goal: 280000,
+    leftImage: 'assets/images/house.svg',
+    rightImage: 'assets/images/tree.svg',
+    badge: 'assets/images/sheregesh.svg',
+    bgcolor: 'rgba(255, 237, 190, 1)',
+    title: 'Поездка на Горный Алтай (Чепош Парк)',
+    ticker: 'Чепош Парк',
+    complete: false,
+    current: false,
+  },
+];

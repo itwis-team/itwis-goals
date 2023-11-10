@@ -1,21 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 
 @font-face {
-  font-family: "Rostov";
-  src: local("Rostov"), url(assets/fonts/Rostov.ttf) format("truetype");
+  font-family: "Coolvetica";
+  src: local("Coolvetica"), url(assets/fonts/coolvetica.ttf) format("truetype");
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Rostov", sans-serif;
-  cursor: none;
+  font-family: "Coolvetica", sans-serif;
   user-select: none;
+  transition: all 0.8s;
 }
 
 body {
   overflow: hidden;
 }
-
-

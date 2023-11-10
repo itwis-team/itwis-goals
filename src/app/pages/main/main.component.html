@@ -1,22 +1,122 @@
-<div class="container">
-  <img class="explosion" src="assets/images/explosion.svg" alt="detail">
-
+<div
+  class="container"
+  *ngFor="let item of preparedItems; let i = index"
+  [style.background-color]="getBackgroundColor(i)"
+>
   <header class="header">
-    <h1 class="header__text">
-      ITWIS ЦЕЛИ:
-    </h1>
-    <h1 class="header__text">
-      2022 ГОД
-    </h1>
+    <h1 class="header__text">iTwis</h1>
+    <h1 class="header__text">2023</h1>
   </header>
 
   <div class="content">
-    <swiper #swiper class="swiper" [config]="config">
+    <swiper #swiper class="swiper" [config]="config" slider1>
       <div class="swiper-wrapper">
-
         <div class="swiper-slide" *ngFor="let item of preparedItems">
           <div class="swiper__content">
-            <div class="swiper__rays">
+            <div class="swiper__slider">
+              <div class="swiper__slider-counter">
+                <div *ngIf="shouldShowElement" class="swiper__slider-prev">
+                  <img src="../../assets/images/prev.svg" alt="prev" />
+                </div>
+                <div class="swiper__slider-text">
+                  <span id="current">{{ item.step }}</span>
+                  <span id="total">/5</span>
+                  <p class="swiper__text">{{ item.title }}</p>
+                </div>
+                <div class="swiper__slider-next">
+                  <img src="../../assets/images/next.svg" alt="next" />
+                </div>
+              </div>
+            </div>
+
+            <div class="ticker-wrapper">
+              <div class="ticker">
+                <div class="ticker__item">
+                  <img [src]="item.leftImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.rightImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.leftImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.rightImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.leftImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.rightImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.leftImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.rightImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.leftImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.rightImage" alt="" />
+                </div>
+                <div class="ticker__item">
+                  <p>{{ item.ticker }}</p>
+                </div>
+                <div class="ticker__item">
+                  <img [src]="item.leftImage" alt="" />
+                </div>
+              </div>
+            </div>
+
+            <div class="card__wrapper">
+              <div class="card">
+                <div class="card__content">
+                  <div class="card__content-now">
+                    <p class="card__content-now-text">Сейчас:</p>
+                    <p class="card__content-now-amount">
+                      {{ current | currency : "USD" : true : "1.0-0" }}
+                    </p>
+                    <hr class="card__content-divider" />
+                    <div class="card__content-goal">
+                      <p class="card__content-goal-text">
+                        Цель:
+                        {{ item.goal | currency : "USD" : true : "1.0-0" }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--  <div class="swiper__rays">
               <img
                 *ngIf="!item.complete"
                 class="swiper__badge"
@@ -33,38 +133,47 @@
                 [class.background-fill]="item.complete"
                 class="swiper__circle"
               >
-                <h2 class="swiper__circle-step">{{item.step}}</h2>
-                <p
-                  *ngIf="!item.complete"
-                  class="swiper__circle-current"
-                >
-                  {{current | currency: 'USD' : true: '1.0-0'}}
+                <h2 class="swiper__circle-step">{{ item.step }}</h2>
+                <p *ngIf="!item.complete" class="swiper__circle-current">
+                  {{ current | currency : "USD" : true : "1.0-0" }}
                 </p>
 
                 <p
                   [class.completed-goal]="item.complete"
                   class="swiper__circle-goal"
                 >
-                  цЕЛЬ: {{item.goal | currency: 'USD' : true: '1.0-0'}}
+                  цЕЛЬ: {{ item.goal | currency : "USD" : true : "1.0-0" }}
                 </p>
 
-                <div class="wave" *ngIf="item.current" [@wave]="{value:runAnimation, params: {top: item.percent + '%'}}"
-                     (@wave.done)="runAnimation = !runAnimation"></div>
+                .
+
+                <div
+                  class="wave"
+                  *ngIf="item.current"
+                  [@wave]="{
+                    value: runAnimation,
+                    params: { top: item.percent + '%' }
+                  }"
+                  (@wave.done)="runAnimation = !runAnimation"
+                ></div>
+              </div>
+            </div> -->
+            <div class="swiper__ratings">
+              <div
+                class="swiper__ratings-sleigh"
+                [style.left.%]="calculatePercentage(item)"
+              >
+                <img src="../../assets/images/sleigh.svg" alt="sleigh" />
+              </div>
+              <div class="swiper__ratings-item">
+                <div class="swiper__ratings-line">
+                  <span [style.width.%]="calculatePercentage(item)"></span>
+                </div>
               </div>
             </div>
-
-            <p class="swiper__text">
-              {{item.title}}
-            </p>
           </div>
         </div>
       </div>
     </swiper>
   </div>
-
-  <img class="cat" src="assets/images/cat.svg" alt="cat">
-  <img class="portal" src="assets/images/portal.svg" alt="portal">
 </div>
-
-<img id="cursor" src="assets/images/skroll.svg" alt="" #cursor/>
-
