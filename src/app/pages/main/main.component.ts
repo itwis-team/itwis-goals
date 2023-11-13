@@ -22,13 +22,17 @@ import { wave } from '../../helpers/animations';
 export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('cursor') cursor!: ElementRef;
   @ViewChild('swiper', { static: false }) swiperElement!: any;
+  @ViewChild('cardWrapper') cardWrapper!: ElementRef;
 
   preparedItems!: GoalItem[];
   current: number = currentAmount;
   currentAmount = currentAmount;
   allItems: GoalItem[] = allItems;
   swiper!: Swiper;
-  card!: ElementRef;
+  private card: HTMLElement | null = null;
+  private mouseX = 0;
+  private mouseY = 0;
+  private isCardMoving = false;
 
   runAnimation: boolean = true;
 
@@ -37,7 +41,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     slidesPerView: 1,
     spaceBetween: 0,
     centeredSlides: true,
-    breakpoints: {
+    /* breakpoints: {
       '2400': {
         slidesPerView: 1,
         spaceBetween: 0,
@@ -68,14 +72,18 @@ export class MainComponent implements OnInit, AfterViewInit {
       '430': {
         slidesPerView: 1,
       },
-    },
+    }, */
     navigation: {
-      prevEl: '.swiper__slider-prev',
-      nextEl: '.swiper__slider-next',
+      prevEl: '.slider-prev',
+      nextEl: '.slider-next',
     },
   };
 
-  constructor(private cdr: ChangeDetectorRef, private renderer: Renderer2) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private renderer: Renderer2,
+    private elRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.preparedItems = allItems.map((item) => {
@@ -96,14 +104,69 @@ export class MainComponent implements OnInit, AfterViewInit {
     // ! Инициализировать Swiper после отображения представления
     this.initializeSwiper();
 
-    /* // ! Поиск карточки на странице
-    this.card = this.renderer.selectRootElement('.card__wrapper');
-    this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
+    // ! Вторая версия пермещения карточки
 
-    // ! Переделанный обработчик события мыши для перемещения .card
-    this.renderer.listen(window, 'mousemove', (event: MouseEvent) => {
-      this.mouseMoveHandler(event);
-    }); */
+    this.card = this.elRef.nativeElement.querySelector('.card');
+
+    if (this.card) {
+      this.elRef.nativeElement.onmousemove = (e: MouseEvent) => {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+
+        if (!this.isCardMoving) {
+          this.moveCardSmoothly();
+        }
+      };
+    }
+  }
+
+  // ! Логика анимации карточки
+  private moveCardSmoothly() {
+    if (this.card) {
+      this.isCardMoving = true;
+      const animationDuration = 4000; // Продолжительность анимации в миллисекундах
+      const startTime = performance.now();
+      const initialLeft = parseInt(getComputedStyle(this.card).left) || 0;
+      const initialTop = parseInt(getComputedStyle(this.card).top) || 0;
+      const initialSkewX =
+        parseInt(getComputedStyle(this.card).transform.split('(')[1]) || 0;
+      const initialSkewY =
+        parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0;
+      const initialScaleX =
+        parseInt(getComputedStyle(this.card).transform.split('(')[1]) || 0;
+      const initialScaleY =
+        parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0;
+      const initialScaleZ =
+        parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0;
+
+      const moveFrame = (timestamp: number) => {
+        const progress = Math.min(
+          1,
+          (timestamp - startTime) / animationDuration
+        );
+
+        this.card!.style.left =
+          initialLeft + progress * (this.mouseX - initialLeft) + 'px';
+        this.card!.style.top =
+          initialTop + progress * (this.mouseY - initialTop) + 'px';
+        this.card!.style.transform = `skew(${
+          initialSkewX + progress * 10
+        }deg, ${initialSkewY + progress * 10}deg)`;
+        this.card!.style.transform = `scale(${
+          initialScaleX + progress * 10
+        }deg, ${initialScaleY + progress * 10}deg, ${
+          initialScaleZ + progress * 10
+        }deg)`;
+
+        if (progress < 1) {
+          requestAnimationFrame(moveFrame);
+        } else {
+          this.isCardMoving = false;
+        }
+      };
+
+      requestAnimationFrame(moveFrame);
+    }
   }
 
   // ! Выбрать цвет фона из data.ts
@@ -141,17 +204,6 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /* @HostListener('document:mousemove', ['$event'])
-  onMouseMove(e: any) {
-    let pos = {
-      x: e.pageX,
-      y: e.pageY,
-    };
-
-    this.cursor.nativeElement.style.left = pos.x - 60 + 'px';
-    this.cursor.nativeElement.style.top = pos.y - 60 + 'px';
-  } */
-
   // ! Листание свайпера
   @HostListener('document:wheel', ['$event'])
   onScroll(e: any) {
@@ -159,24 +211,6 @@ export class MainComponent implements OnInit, AfterViewInit {
       ? this.swiperElement.swiper.slideNext()
       : this.swiperElement.swiper.slidePrev();
   }
-
-  /* getWavePercent(item: GoalItem) {
-    //lower pos
-    if (this.getCurrentPercent(item) <= 15) {
-      return 5;
-    }
-
-    //higher pos
-    if (this.getCurrentPercent(item) >= 95) {
-      return 85;
-    }
-
-    return this.getCurrentPercent(item);
-  } */
-
-  /*  getCurrentPercent(item: GoalItem) {
-    return (this.current / item.goal) * 100;
-  } */
 
   shouldShowElement: boolean = true;
 
@@ -189,10 +223,4 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
     return percent;
   }
-
-  /*  mouseMoveHandler(event: MouseEvent): void {
-    // ! Изменение стилей элемента .card при перемещении мыши
-    this.renderer.setStyle(this.card.nativeElement, 'left', `${event.pageX}px`);
-    this.renderer.setStyle(this.card.nativeElement, 'top', `${event.pageY}px`);
-  } */
 }
