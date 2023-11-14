@@ -136,7 +136,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   // ! Обработчик завершения анимации перехода слайда
   private handleTransitionEnd = () => {
-    this.card = null; // Сбросить значение при завершении анимации
+    this.card = null;
     this.cards?.forEach((card, index) => {
       if (index === this.swiper.activeIndex) {
         this.card = card.nativeElement;
@@ -148,7 +148,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   private moveCardSmoothly() {
     if (this.card) {
       this.isCardMoving = true;
-      const animationDuration = 4000; // Продолжительность анимации в миллисекундах
+      const animationDuration = 3000; // Продолжительность анимации в миллисекундах
       const startTime = performance.now();
       const initialLeft = parseInt(getComputedStyle(this.card).left) || 0;
       const initialTop = parseInt(getComputedStyle(this.card).top) || 0;
@@ -173,13 +173,13 @@ export class MainComponent implements OnInit, AfterViewInit {
           initialLeft + progress * (this.mouseX - initialLeft) + 'px';
         this.card!.style.top =
           initialTop + progress * (this.mouseY - initialTop) + 'px';
-        this.card!.style.transform = `skew(${
-          initialSkewX + progress * 10
-        }deg, ${initialSkewY + progress * 10}deg)`;
+        this.card!.style.transform = `skew(${initialSkewX + progress * 5}deg, ${
+          initialSkewY + progress * 5
+        }deg)`;
         this.card!.style.transform = `scale(${
-          initialScaleX + progress * 10
-        }deg, ${initialScaleY + progress * 10}deg, ${
-          initialScaleZ + progress * 10
+          initialScaleX + progress * 5
+        }deg, ${initialScaleY + progress * 5}deg, ${
+          initialScaleZ + progress * 5
         }deg)`;
 
         if (progress < 1) {
@@ -206,13 +206,11 @@ export class MainComponent implements OnInit, AfterViewInit {
     if (this.swiperElement && this.swiperElement.swiper) {
       this.swiper = this.swiperElement.swiper;
 
-      // Подписка на событие изменения слайда в Swiper
       this.swiper.on('slideChangeTransitionEnd', () => {
-        // Обновление цвета фона
         this.updateContainerBackgroundColor();
-        // Принудительное обновление Angular Change Detection
+
         this.cdr.detectChanges();
-        // Повторная инициализация анимации карточки
+
         this.initializeCardAnimation();
       });
     }
