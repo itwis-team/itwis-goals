@@ -7,6 +7,9 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Renderer2,
+  OnDestroy,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { SwiperOptions, Swiper } from 'swiper';
 import { GoalItem } from '../../types/GoalItem';
@@ -23,6 +26,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('cursor') cursor!: ElementRef;
   @ViewChild('swiper', { static: false }) swiperElement!: any;
   @ViewChild('cardWrapper') cardWrapper!: ElementRef;
+  @ViewChildren('card') cards: QueryList<ElementRef> | undefined;
 
   preparedItems!: GoalItem[];
   current: number = currentAmount;
@@ -85,6 +89,11 @@ export class MainComponent implements OnInit, AfterViewInit {
     private elRef: ElementRef
   ) {}
 
+  ngOnDestroy() {
+    // ! Отписываемся от события transitionEnd при уничтожении компонента
+    this.swiperElement.swiper.off('transitionEnd', this.handleTransitionEnd);
+  }
+
   ngOnInit(): void {
     this.preparedItems = allItems.map((item) => {
       if (item.goal <= this.current) {
@@ -104,21 +113,36 @@ export class MainComponent implements OnInit, AfterViewInit {
     // ! Инициализировать Swiper после отображения представления
     this.initializeSwiper();
 
-    // ! Вторая версия пермещения карточки
-
+    // ! Вторая версия перемещения карточки
     this.card = this.elRef.nativeElement.querySelector('.card');
 
-    if (this.card) {
-      this.elRef.nativeElement.onmousemove = (e: MouseEvent) => {
+    // ! Подписываемся на событие mousemove через Renderer2
+    this.renderer.listen(
+      this.elRef.nativeElement,
+      'mousemove',
+      (e: MouseEvent) => {
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
 
         if (!this.isCardMoving) {
           this.moveCardSmoothly();
         }
-      };
-    }
+      }
+    );
+
+    // ! Повторно инициализировать анимацию карточки при отображении
+    this.initializeCardAnimation();
   }
+
+  // ! Обработчик завершения анимации перехода слайда
+  private handleTransitionEnd = () => {
+    this.card = null; // Сбросить значение при завершении анимации
+    this.cards?.forEach((card, index) => {
+      if (index === this.swiper.activeIndex) {
+        this.card = card.nativeElement;
+      }
+    });
+  };
 
   // ! Логика анимации карточки
   private moveCardSmoothly() {
@@ -182,14 +206,25 @@ export class MainComponent implements OnInit, AfterViewInit {
     if (this.swiperElement && this.swiperElement.swiper) {
       this.swiper = this.swiperElement.swiper;
 
-      // ! Подписка на событие изменения слайда в Swiper
-      this.swiper.on('slideChange', () => {
-        // ! Обновление цвета фона
+      // Подписка на событие изменения слайда в Swiper
+      this.swiper.on('slideChangeTransitionEnd', () => {
+        // Обновление цвета фона
         this.updateContainerBackgroundColor();
-        // ! Принудительное обновление Angular Change Detection
+        // Принудительное обновление Angular Change Detection
         this.cdr.detectChanges();
+        // Повторная инициализация анимации карточки
+        this.initializeCardAnimation();
       });
     }
+  }
+
+  // !Инициализировать переменную card после отображения представления
+  initializeCardAnimation() {
+    this.cards?.forEach((card, index) => {
+      if (index === this.swiper.activeIndex) {
+        this.card = card.nativeElement;
+      }
+    });
   }
 
   // ! Изменить цвет фона, учитвая номер слайда

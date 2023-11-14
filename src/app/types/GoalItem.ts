@@ -4,7 +4,6 @@ export interface GoalItem {
   goal: number;
   leftImage: string;
   rightImage: string;
-  badge: string;
   bgcolor: string;
   title: string;
   ticker: string;
