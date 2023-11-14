@@ -14,13 +14,12 @@ import {
 import { SwiperOptions, Swiper } from 'swiper';
 import { GoalItem } from '../../types/GoalItem';
 import { allItems, currentAmount } from '../../data/data';
-import { wave } from '../../helpers/animations';
+import * as THREE from 'three';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
-  animations: [wave],
 })
 export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('cursor') cursor!: ElementRef;
@@ -45,38 +44,6 @@ export class MainComponent implements OnInit, AfterViewInit {
     slidesPerView: 1,
     spaceBetween: 0,
     centeredSlides: true,
-    /* breakpoints: {
-      '2400': {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      '2000': {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      '1600': {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      '1200': {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      '800': {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      '750': {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      '600': {
-        slidesPerView: 1,
-      },
-      '430': {
-        slidesPerView: 1,
-      },
-    }, */
     navigation: {
       prevEl: '.slider-prev',
       nextEl: '.slider-next',
@@ -111,10 +78,9 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // ! Инициализировать Swiper после отображения представления
-    this.initializeSwiper();
+    this.subscribeToSlideChange();
 
-    // ! Вторая версия перемещения карточки
-    this.card = this.elRef.nativeElement.querySelector('.card');
+    /*  const cardElement = this.cardWrapper.nativeElement.querySelector('.card'); */
 
     // ! Подписываемся на событие mousemove через Renderer2
     this.renderer.listen(
@@ -130,8 +96,82 @@ export class MainComponent implements OnInit, AfterViewInit {
       }
     );
 
+    // ! Новая анимация карточки через Three.js
+
+    this.card = this.elRef.nativeElement.querySelector('.card');
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      10000
+    );
+    camera.position.z = Math.round(10000 / 20);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    this.elRef.nativeElement.appendChild(renderer.domElement);
+
+    const mouse = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+    document.addEventListener('mousemove', (event) => {
+      mouse.x = (event.clientX / window.innerWidth) * 10 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 10 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children);
+
+      if (intersects.length > 0) {
+        const obj = intersects[0].object;
+        if (obj && this.card) {
+          this.renderer.setStyle(
+            this.card,
+            'transform',
+            `translate(${mouse.x * 100}px, ${mouse.y * 100}px)`
+          );
+        }
+      }
+    });
+
+    const render = () => {
+      requestAnimationFrame(render);
+      renderer.render(scene, camera);
+    };
+    render();
+
     // ! Повторно инициализировать анимацию карточки при отображении
-    this.initializeCardAnimation();
+
+    /* this.initializeCardAnimation() */
+    this.subscribeToSlideChange();
+  }
+
+  // ! Обноавление методов при смене слайда
+  private subscribeToSlideChange() {
+    if (this.swiperElement && this.swiperElement.swiper) {
+      this.swiper = this.swiperElement.swiper;
+      const activeSlideIndex = this.swiper.activeIndex;
+
+      this.swiper.on('slideChangeTransitionEnd', () => {
+        this.updateContainerBackgroundColor();
+        this.cdr.detectChanges();
+        this.moveCardOnCurrentSlide(activeSlideIndex);
+        this.initializeCardAnimation();
+      });
+    }
+  }
+
+  // ! Движение карточки при смене слайда
+  private moveCardOnCurrentSlide(activeSlideIndex: number) {
+    const cardsArray = this.cards?.toArray();
+    const cardOfCurrentSlide = cardsArray
+      ? cardsArray[activeSlideIndex]?.nativeElement
+      : null;
+
+    if (cardOfCurrentSlide && !this.isCardMoving) {
+      this.card = cardOfCurrentSlide;
+      this.moveCardSmoothly();
+    }
   }
 
   // ! Обработчик завершения анимации перехода слайда
@@ -148,11 +188,11 @@ export class MainComponent implements OnInit, AfterViewInit {
   private moveCardSmoothly() {
     if (this.card) {
       this.isCardMoving = true;
-      const animationDuration = 3000; // Продолжительность анимации в миллисекундах
+      const animationDuration = 4000;
       const startTime = performance.now();
       const initialLeft = parseInt(getComputedStyle(this.card).left) || 0;
       const initialTop = parseInt(getComputedStyle(this.card).top) || 0;
-      const initialSkewX =
+      /* const initialSkewX =
         parseInt(getComputedStyle(this.card).transform.split('(')[1]) || 0;
       const initialSkewY =
         parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0;
@@ -161,7 +201,7 @@ export class MainComponent implements OnInit, AfterViewInit {
       const initialScaleY =
         parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0;
       const initialScaleZ =
-        parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0;
+        parseInt(getComputedStyle(this.card).transform.split(',')[1]) || 0; */
 
       const moveFrame = (timestamp: number) => {
         const progress = Math.min(
@@ -170,17 +210,17 @@ export class MainComponent implements OnInit, AfterViewInit {
         );
 
         this.card!.style.left =
-          initialLeft + progress * (this.mouseX - initialLeft) + 'px';
+          initialLeft + progress * (this.mouseX - initialLeft) + 50 + 'px';
         this.card!.style.top =
-          initialTop + progress * (this.mouseY - initialTop) + 'px';
-        this.card!.style.transform = `skew(${initialSkewX + progress * 5}deg, ${
+          initialTop + progress * (this.mouseY - initialTop) + 50 + 'px';
+        /* this.card!.style.transform = `skew(${initialSkewX + progress * 5}deg, ${
           initialSkewY + progress * 5
         }deg)`;
         this.card!.style.transform = `scale(${
           initialScaleX + progress * 5
         }deg, ${initialScaleY + progress * 5}deg, ${
           initialScaleZ + progress * 5
-        }deg)`;
+        }deg)`; */
 
         if (progress < 1) {
           requestAnimationFrame(moveFrame);
@@ -201,22 +241,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     return 'rgba(242, 242, 242, 1)';
   }
 
-  // ! Выявить номер слайда и изменить цвет фона
-  initializeSwiper() {
-    if (this.swiperElement && this.swiperElement.swiper) {
-      this.swiper = this.swiperElement.swiper;
-
-      this.swiper.on('slideChangeTransitionEnd', () => {
-        this.updateContainerBackgroundColor();
-
-        this.cdr.detectChanges();
-
-        this.initializeCardAnimation();
-      });
-    }
-  }
-
-  // !Инициализировать переменную card после отображения представления
+  // ! Инициализировать переменную card после отображения представления
   initializeCardAnimation() {
     this.cards?.forEach((card, index) => {
       if (index === this.swiper.activeIndex) {
