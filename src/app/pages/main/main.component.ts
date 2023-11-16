@@ -25,7 +25,7 @@ import { Subject } from 'rxjs';
 export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('cursor') cursor!: ElementRef;
   @ViewChild('swiper', { static: false }) swiperElement!: any;
-  /* @ViewChild('cardWrapper') cardWrapper!: ElementRef; */
+  @ViewChild('cardWrapper') cardWrapper!: ElementRef;
   @ViewChildren('.card') cards: QueryList<ElementRef> | undefined;
 
   preparedItems!: GoalItem[];
@@ -66,33 +66,120 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       if (item.goal <= this.current) {
         item.complete = true;
       }
-
       if (item.prevGoal <= this.current && this.current < item.goal) {
         item.current = true;
-        /* item.percent = this.getWavePercent(item); */
       }
-
       return item;
     });
   }
 
-  // * Переписанные методы
+  // * Переписанные методы для работы с карточкой
   updateCardOnSlideChange(activeSlideIndex: number) {
     const cardsOfCurrentSlide = document
       .querySelectorAll('.swiper-slide')
       [activeSlideIndex]?.querySelectorAll('.card');
-
     if (cardsOfCurrentSlide && cardsOfCurrentSlide.length > 0) {
       this.card = cardsOfCurrentSlide[0] as HTMLElement;
       const currentSlideRect = document
         .querySelectorAll('.swiper-slide')
         [activeSlideIndex].getBoundingClientRect();
-
-      this.resetCardPositions();
       this.moveCardSmoothly(currentSlideRect);
     }
   }
 
+  // * Сохрнаить начальные позиции каждой карточки в map
+
+  initializeCardPositions() {
+    this.cards?.forEach((card, _index) => {
+      const cardElement = card.nativeElement;
+      const cardRect = cardElement.getBoundingClientRect();
+      this.initialCardPositions.set(cardElement, cardRect);
+    });
+  }
+
+  // ! Инициализировать переменную card после смены слайда
+  initializeCardAnimation() {
+    this.cards?.forEach((card, index) => {
+      if (index === this.swiperElement.activeIndex) {
+        this.card = card.nativeElement;
+      }
+    });
+  }
+
+  // ! Движение карточки при смене слайда
+  moveCardOnCurrentSlide(activeSlideIndex: number) {
+    const cardsArray = this.cards?.toArray();
+    const cardOfCurrentSlide = cardsArray
+      ? cardsArray[activeSlideIndex]?.nativeElement
+      : null;
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    const currentSlideRect = swiperWrapper
+      ? swiperWrapper.getBoundingClientRect()
+      : null;
+    if (cardOfCurrentSlide && !this.isCardMoving && currentSlideRect) {
+      this.card = cardOfCurrentSlide;
+      this.moveCardSmoothly(currentSlideRect);
+    }
+  }
+
+  // ! Логика анимации карточки
+  moveCardSmoothly(currentSlideRect: DOMRect | null) {
+    if (this.card && currentSlideRect) {
+      this.isCardMoving = true;
+      const animationDuration = 4000;
+      const startTime = performance.now();
+      const initialLeft = parseInt(getComputedStyle(this.card).left) || 0;
+      const initialTop = parseInt(getComputedStyle(this.card).top) || 0;
+      const moveFrame = (timestamp: number) => {
+        const progress = Math.min(
+          1,
+          (timestamp - startTime) / animationDuration
+        );
+
+        // * Получаем границы текущего слайда
+        const slideLeft = currentSlideRect.left;
+        const slideTop = currentSlideRect.top;
+        const slideRight =
+          slideLeft +
+          currentSlideRect.width -
+          (this.card ? this.card.offsetWidth : 0);
+        const slideBottom =
+          slideTop +
+          currentSlideRect.height -
+          (this.card ? this.card.offsetHeight : 0);
+
+        const newLeft = Math.min(
+          Math.max(
+            slideLeft,
+            initialLeft + progress * (this.mouseX - initialLeft)
+          ),
+          slideRight
+        );
+        const newTop = Math.min(
+          Math.max(
+            slideTop,
+            initialTop + progress * (this.mouseY - initialTop)
+          ),
+          slideBottom
+        );
+
+        if (this.card) {
+          this.card.style.left = newLeft + 'px';
+          this.card.style.top = newTop + 'px';
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(moveFrame);
+        } else {
+          this.isCardMoving = false;
+        }
+      };
+
+      requestAnimationFrame(moveFrame);
+    }
+  }
+
+  // ! Изменить цвет фона при смене слайда
   updateContainerBackgroundColor(activeSlideIndex: number) {
     if (this.allItems[activeSlideIndex]) {
       const bgColor = this.allItems[activeSlideIndex].bgcolor;
@@ -103,40 +190,12 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // * Новый способ через подписку на изменения слайда
-  subscribeToSlideChange() {
-    if (this.swiperElement && this.swiperElement.swiper) {
-      this.swiper = this.swiperElement.swiper;
-      this.swiperElement.swiper.on('slideChange', () => {
-        /* console.log(this.swiperElement.swiper.activeIndex); */
-        const activeSlideIndex = this.swiperElement.swiper.activeIndex;
-        this.updateContainerBackgroundColor(activeSlideIndex);
-        this.updateCardOnSlideChange(activeSlideIndex);
-        this.resetCardPositionsForCurrentSlide(activeSlideIndex);
-        this.resetCardPositions();
-        this.updateInitialCardPositions();
-      });
+  // ! Выбрать цвет фона из data.ts
+  getBackgroundColor(index: number): string {
+    if (this.allItems[index]) {
+      return this.allItems[index].bgcolor || 'rgba(242, 242, 242, 1)'; // Цвет по умолчанию
     }
-  }
-
-  // * Сохрнаить начальные позиции каждой карточки в map
-  updateInitialCardPositions() {
-    this.cards?.forEach((card, _index) => {
-      console.log(this.cards);
-
-      const cardElement = card.nativeElement;
-      const cardRect = cardElement.getBoundingClientRect();
-      this.initialCardPositions.set(cardElement, cardRect);
-    });
-  }
-
-  // * Вернуть карточку в исходное положение
-  resetCardPositions() {
-    this.initialCardPositions.forEach((cardRect, cardElement) => {
-      cardElement.style.left = cardRect.left + 'px';
-      //   cardElement.style.left = `calc(${cardRect.left}px - 100vw)`;
-      cardElement.style.top = cardRect.top + 'px';
-    });
+    return 'rgba(242, 242, 242, 1)';
   }
 
   // * Принять индекс активного слайда
@@ -144,7 +203,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentSlideCards = document
       .querySelectorAll('.swiper-slide')
       [activeSlideIndex]?.querySelectorAll('.card');
-
     if (currentSlideCards && currentSlideCards.length > 0) {
       currentSlideCards.forEach((card) => {
         const cardElement = card as HTMLElement;
@@ -157,10 +215,20 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
-    // this.swiperElement.swiper.on('slideChange', () => {
-    // });
+  // * Вызов методов после изменения индекса слайда
+  subscribeToSlideChange() {
+    if (this.swiperElement && this.swiperElement.swiper) {
+      this.swiper = this.swiperElement.swiper;
+      this.swiperElement.swiper.on('slideChange', () => {
+        const activeSlideIndex = this.swiperElement.swiper.activeIndex;
+        this.updateContainerBackgroundColor(activeSlideIndex); // обновить цвет фона
+        this.updateCardOnSlideChange(activeSlideIndex); // выбрать новую карточку на текущем слайде и применить к ней анимацию
+        this.resetCardPositionsForCurrentSlide(activeSlideIndex); // вернуть карточку в исходное положение
+      });
+    }
+  }
 
+  ngAfterViewInit() {
     this.initializeCardPositions();
     console.log(this.initialCardPositions);
 
@@ -186,9 +254,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     this.slideChangeSubject.subscribe((activeSlideIndex: number) => {
       this.updateCardOnSlideChange(activeSlideIndex);
     });
-    /*    // ! Инициализировать Swiper после отображения представления
-		this.subscribeToSlideChange();
-	*/
+
+    // ! Инициализировать Swiper после отображения представления
+
     /* const cardElement = this.cardWrapper.nativeElement.querySelector('.card'); */
 
     // ! Подписываемся на событие mousemove через Renderer2
@@ -249,12 +317,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     render(); */
 
-    // ! Повторно инициализировать анимацию карточки при отображении
+    // * Инициалилзировать изменения при смене слайда
 
-    /* this.initializeCardAnimation() */
     this.subscribeToSlideChange();
-    this.updateContainerBackgroundColor(this.swiperElement.activeIndex);
-    this.updateCardOnSlideChange(this.swiperElement.activeIndex);
 
     // ! Баг с верстикальным скролом
     this.swiperElement.swiper.on('sliderMove', () => {
@@ -276,14 +341,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  initializeCardPositions() {
-    this.cards?.forEach((card, _index) => {
-      const cardElement = card.nativeElement;
-      const cardRect = cardElement.getBoundingClientRect();
-      this.initialCardPositions.set(cardElement, cardRect);
-    });
-  }
-
   swipeSlide(direction: 'next' | 'prev') {
     if (direction === 'next') {
       this.swiperElement.swiper.slideNext();
@@ -301,41 +358,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     this.slideChangeSubject.unsubscribe();
   }
 
-  // ! Обноавление методов при смене слайда
-  /* subscribeToSlideChange() {
-		if (this.swiperElement && this.swiperElement.swiper) {
-		this.swiper = this.swiperElement.swiper;
-		const activeSlideIndex = this.swiper.activeIndex;
-
-		this.swiper.on('slideChangeTransitionEnd', () => {
-			this.updateContainerBackgroundColor();
-			this.cdr.detectChanges();
-			this.moveCardOnCurrentSlide(activeSlideIndex);
-			this.initializeCardAnimation();	
-
-			console.log('новый слайд');
-		});
-		}
-	} */
-
-  // ! Движение карточки при смене слайда
-  moveCardOnCurrentSlide(activeSlideIndex: number) {
-    const cardsArray = this.cards?.toArray();
-    const cardOfCurrentSlide = cardsArray
-      ? cardsArray[activeSlideIndex]?.nativeElement
-      : null;
-
-    const swiperWrapper = document.querySelector('.swiper-wrapper');
-    const currentSlideRect = swiperWrapper
-      ? swiperWrapper.getBoundingClientRect()
-      : null;
-
-    if (cardOfCurrentSlide && !this.isCardMoving && currentSlideRect) {
-      this.card = cardOfCurrentSlide;
-      this.moveCardSmoothly(currentSlideRect);
-    }
-  }
-
   // ! Обработчик завершения анимации перехода слайда
   handleTransitionEnd = () => {
     this.card = null;
@@ -345,93 +367,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   };
-
-  // ! Инициализировать переменную card после смены слайда
-  initializeCardAnimation() {
-    this.cards?.forEach((card, index) => {
-      if (index === this.swiperElement.activeIndex) {
-        this.card = card.nativeElement;
-      }
-    });
-  }
-
-  // ! Логика анимации карточки
-  moveCardSmoothly(currentSlideRect: DOMRect | null) {
-    if (this.card && currentSlideRect) {
-      this.isCardMoving = true;
-      const animationDuration = 4000;
-      const startTime = performance.now();
-      const initialLeft = parseInt(getComputedStyle(this.card).left) || 0;
-      const initialTop = parseInt(getComputedStyle(this.card).top) || 0;
-
-      const moveFrame = (timestamp: number) => {
-        const progress = Math.min(
-          1,
-          (timestamp - startTime) / animationDuration
-        );
-
-        // * Получаем границы текущего слайда
-        const slideLeft = currentSlideRect.left;
-        const slideTop = currentSlideRect.top;
-        const slideRight =
-          slideLeft +
-          currentSlideRect.width -
-          (this.card ? this.card.offsetWidth : 0);
-        const slideBottom =
-          slideTop +
-          currentSlideRect.height -
-          (this.card ? this.card.offsetHeight : 0);
-
-        const newLeft = Math.min(
-          Math.max(
-            slideLeft,
-            initialLeft + progress * (this.mouseX - initialLeft)
-          ),
-          slideRight
-        );
-        const newTop = Math.min(
-          Math.max(
-            slideTop,
-            initialTop + progress * (this.mouseY - initialTop)
-          ),
-          slideBottom
-        );
-
-        if (this.card) {
-          this.card.style.left = newLeft + 'px';
-          this.card.style.top = newTop + 'px';
-        }
-
-        if (progress < 1) {
-          requestAnimationFrame(moveFrame);
-        } else {
-          this.isCardMoving = false;
-        }
-      };
-
-      requestAnimationFrame(moveFrame);
-    }
-  }
-
-  // ! Выбрать цвет фона из data.ts
-  getBackgroundColor(index: number): string {
-    if (this.allItems[index]) {
-      return this.allItems[index].bgcolor || 'rgba(242, 242, 242, 1)'; // Цвет по умолчанию
-    }
-    return 'rgba(242, 242, 242, 1)';
-  }
-
-  // ! Изменить цвет фона, учитвая номер слайда
-  /*  updateContainerBackgroundColor() {
-		const activeSlideIndex = this.swiper.activeIndex;
-		if (this.allItems[activeSlideIndex]) {
-		const bgColor = this.allItems[activeSlideIndex].bgcolor;
-		const container = document.querySelector('.container');
-		if (container) {
-			this.renderer.setStyle(container, 'background-color', bgColor);
-		}
-		}
-	} */
 
   // ! Листание свайпера
   @HostListener('document:wheel', ['$event'])
