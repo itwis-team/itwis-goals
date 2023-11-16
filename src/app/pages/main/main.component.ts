@@ -131,29 +131,22 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   moveCardSmoothly(currentSlideRect: DOMRect | null) {
     if (this.card && currentSlideRect) {
       const cardElement = this.card as HTMLElement;
-      const slideLeft = currentSlideRect.left;
-      const slideTop = currentSlideRect.top;
 
-      cardElement.style.transition = 'transform 0.4s ease-in-out';
+      document.addEventListener('DOMContentLoaded', function () {
+        cardElement.classList.add('animated');
+      });
 
-      const offsetX = this.mouseX - slideLeft - cardElement.offsetWidth / 2;
-      const offsetY = this.mouseY - slideTop - cardElement.offsetHeight / 2;
+      // Получаем координаты курсора относительно .card
+      const offsetX = this.mouseX - cardElement.offsetWidth * 3.16;
+      const offsetY = this.mouseY - cardElement.offsetHeight;
 
-      cardElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      // Новые координаты .card без ограничений
+      const newLeft = offsetX;
+      const newTop = offsetY;
 
-      setTimeout(() => {
-        cardElement.style.transition = '';
-      }, 4000);
+      cardElement.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(2deg)`;
 
-      const slideRight =
-        slideLeft + currentSlideRect.width - cardElement.offsetWidth;
-      const slideBottom =
-        slideTop + currentSlideRect.height - cardElement.offsetHeight;
-
-      const newLeft = Math.min(Math.max(slideLeft, offsetX), slideRight);
-      const newTop = Math.min(Math.max(slideTop, offsetY), slideBottom);
-
-      cardElement.style.transform = `translate(${newLeft}px, ${newTop}px)`;
+      cardElement.classList.add('animated');
     }
   }
 
@@ -208,11 +201,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    /* this.initializeCardPositions(); */
-
-    console.log(this.initialCardPositions);
-    console.log('Cards:', this.cards);
-
     this.cards?.forEach((card, _index) => {
       const cardElement = card.nativeElement;
       const cardRect = cardElement.getBoundingClientRect();
@@ -230,7 +218,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     if (swiperWrapper) {
       currentSlideRect = swiperWrapper.getBoundingClientRect();
       if (currentSlideRect) {
-        this.moveCardSmoothly(currentSlideRect); // Начать анимацию .card для первого слайда
+        this.moveCardSmoothly(currentSlideRect);
       }
     }
 
@@ -256,11 +244,11 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     );
 
+    this.card = this.elRef.nativeElement.querySelector('.card');
+
     // ! Новая анимация карточки через Three.js
 
-    /*   this.card = this.elRef.nativeElement.querySelector('.card');
-
-    const scene = new THREE.Scene();
+    /*  const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,

@@ -234,7 +234,22 @@
     }
   }
 }
+
 .card__wrapper {
+  @keyframes waveAnimation {
+    0% {
+      transform: translateY(50px);
+    }
+    25% {
+      transform: translateY(0px) rotate(-10deg);
+    }
+    75% {
+      transform: translateY(0px) rotate(10deg);
+    }
+    100% {
+      transform: translateY(50px);
+    }
+  }
   position: relative;
   height: 100%;
   width: 100%;
@@ -242,6 +257,7 @@
   justify-content: center;
   align-items: center;
   z-index: 0;
+  animation: waveAnimation 4s ease-in-out infinite;
   .card {
     position: fixed;
     margin: 0 auto;
@@ -256,7 +272,9 @@
     flex-shrink: 0;
     background-color: $red;
     border: 3px solid $yellow;
-    transform: rotate(2deg);
+    .animated {
+      animation: waveAnimation 4s ease-in-out infinite;
+    }
 
     &__content {
       color: rgba(242, 242, 242, 1);
