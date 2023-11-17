@@ -177,8 +177,8 @@
       animation-timing-function: linear;
       -webkit-animation-name: ticker;
       animation-name: ticker;
-      -webkit-animation-duration: 10s;
-      animation-duration: 10s;
+      -webkit-animation-duration: 12s;
+      animation-duration: 12s;
 
       &__item {
         align-items: center;
@@ -250,7 +250,7 @@
   justify-content: center;
   align-items: center;
   z-index: 0;
-  animation: waveAnimation 4s ease-in-out infinite;
+  animation: waveAnimation 4s linear infinite;
   .card {
     position: fixed;
     margin: 0 auto;

@@ -46,6 +46,7 @@ export class MainComponent implements OnInit, AfterViewInit {
       prevEl: '.slider-prev',
       nextEl: '.slider-next',
     },
+    speed: 1500,
   };
 
   constructor(private renderer: Renderer2, private elRef: ElementRef) {}
@@ -108,25 +109,14 @@ export class MainComponent implements OnInit, AfterViewInit {
       const cardElement = this.card as HTMLElement;
 
       // ? Получаем координаты курсора относительно .card
-      const offsetX = this.mouseX - cardElement.offsetWidth * 3.16;
+      const offsetX = this.mouseX - cardElement.offsetWidth * 2.7;
       const offsetY = this.mouseY - cardElement.offsetHeight;
 
       // ? Координаты .card без ограничений рамками страницы
       const newLeft = offsetX;
       const newTop = offsetY;
 
-      cardElement.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(2deg)`;
-
-      /*  let prevX = this.mouseX;
-
-      document.addEventListener('mousemove', (e: MouseEvent) => {
-        if (e.clientX < prevX) {
-          cardElement.style.transform += ' skew(-55deg)';
-        } else {
-          cardElement.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(2deg)`;
-        }
-        prevX = e.clientX;
-      }); */
+      cardElement.style.transform = `translate(${newLeft}px, ${newTop}px)`;
     }
   }
 
@@ -188,7 +178,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     this.card = this.elRef.nativeElement.querySelector('.card');
 
-    /*   // ! Анимация карточки через Three.js
+    /*  // ! Анимация карточки через Three.js (не работает)
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -226,7 +216,6 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     const render = () => {
       requestAnimationFrame(render);
-      renderer.render(scene, camera);
     };
     render(); */
 
