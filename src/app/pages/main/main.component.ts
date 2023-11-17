@@ -222,7 +222,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     // ! Инициалилзировать изменения при смене слайда
     this.subscribeToSlideChange();
 
-    // ! Исправление бага с верстикальным скроллом
+    // ! Исправление бага с верстикальным скроллом при листании слайдов
     this.swiperElement.swiper.on('sliderMove', () => {
       this.swiperActive = true;
     });
