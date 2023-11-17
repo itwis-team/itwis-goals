@@ -104,17 +104,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   // ! Логика анимации карточки
   moveCardSmoothly(currentSlideRect: DOMRect | null) {
-    if (this.card && currentSlideRect) {
-      const cardElement = this.card as HTMLElement;
-
-      const offsetX = this.mouseX - cardElement.offsetWidth * 2.7;
-      const offsetY = this.mouseY - cardElement.offsetHeight;
-
-      let newLeft = offsetX;
-      let newTop = offsetY;
-
-      cardElement.style.transform = `translate(${newLeft}px, ${newTop}px)`;
-    }
+    console.log(window.innerWidth);
 
     if (this.card && currentSlideRect) {
       const cardElement = this.card as HTMLElement;
@@ -125,9 +115,19 @@ export class MainComponent implements OnInit, AfterViewInit {
       const areaWidth = cardElement.offsetWidth * 2;
       const areaHeight = cardElement.offsetHeight * 1.5;
 
-      // ? Ограничение пространства перемещения .card
+      let minWidthFraction: number;
 
-      const minX = window.innerWidth * -0.39;
+      if (window.innerWidth > 1919) {
+        minWidthFraction = 0.39;
+      } else if (window.innerWidth < 744) {
+        minWidthFraction = 0.15;
+      } else if (window.innerWidth < 344) {
+        minWidthFraction = 0.07;
+      } else {
+        minWidthFraction = 0.39;
+      }
+
+      const minX = window.innerWidth * -minWidthFraction;
       const minY = window.innerHeight * -0.39;
       const maxX = areaWidth + 30;
       const maxY = areaHeight + 30;
