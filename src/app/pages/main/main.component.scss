@@ -19,6 +19,7 @@
   padding-left: 64px;
   max-height: 150px;
   width: 100vw;
+  z-index: 11;
 
   &__text {
     color: $black;
