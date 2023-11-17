@@ -5,9 +5,7 @@ import {
   OnInit,
   ViewChild,
   AfterViewInit,
-  ChangeDetectorRef,
   Renderer2,
-  OnDestroy,
   ViewChildren,
   QueryList,
 } from '@angular/core';
@@ -15,14 +13,13 @@ import { SwiperOptions, Swiper } from 'swiper';
 import { GoalItem } from '../../types/GoalItem';
 import { allItems, currentAmount } from '../../data/data';
 import * as THREE from 'three';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
 })
-export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('cursor') cursor!: ElementRef;
   @ViewChild('swiper', { static: false }) swiperElement!: any;
   @ViewChild('cardWrapper') cardWrapper!: ElementRef;
@@ -37,12 +34,8 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   mouseX = 0;
   mouseY = 0;
   isCardMoving = false;
-
   runAnimation: boolean = true;
-
-  private slideChangeSubject = new Subject<number>();
-  private initialCardPositions: Map<HTMLElement, DOMRect> = new Map();
-  private swiperActive: boolean = false;
+  swiperActive: boolean = false;
 
   // ! Параметры Swiper
   config: SwiperOptions = {
@@ -55,11 +48,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   };
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private renderer: Renderer2,
-    private elRef: ElementRef
-  ) {}
+  constructor(private renderer: Renderer2, private elRef: ElementRef) {}
 
   ngOnInit(): void {
     this.preparedItems = allItems.map((item) => {
@@ -71,13 +60,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       return item;
     });
-
-    this.initializeCardPositions();
-
-    console.log('Cards:', this.cards);
   }
 
-  // * Переписанные методы для работы с карточкой
+  // ! Переписанные методы для работы с карточкой
   updateCardOnSlideChange(activeSlideIndex: number) {
     const cardsOfCurrentSlide = document
       .querySelectorAll('.swiper-slide')
@@ -89,16 +74,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
         [activeSlideIndex].getBoundingClientRect();
       this.moveCardSmoothly(currentSlideRect);
     }
-  }
-
-  // * Сохрнаить начальные позиции каждой карточки в map
-  initializeCardPositions() {
-    const cardsArray = this.cards?.toArray();
-    cardsArray?.forEach((card, _index) => {
-      const cardElement = card.nativeElement;
-      const cardRect = cardElement.getBoundingClientRect();
-      this.initialCardPositions.set(cardElement, cardRect);
-    });
   }
 
   // ! Инициализировать переменную card после смены слайда
@@ -132,21 +107,26 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.card && currentSlideRect) {
       const cardElement = this.card as HTMLElement;
 
-      document.addEventListener('DOMContentLoaded', function () {
-        cardElement.classList.add('animated');
-      });
-
-      // Получаем координаты курсора относительно .card
+      // ? Получаем координаты курсора относительно .card
       const offsetX = this.mouseX - cardElement.offsetWidth * 3.16;
       const offsetY = this.mouseY - cardElement.offsetHeight;
 
-      // Новые координаты .card без ограничений
+      // ? Координаты .card без ограничений рамками страницы
       const newLeft = offsetX;
       const newTop = offsetY;
 
       cardElement.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(2deg)`;
 
-      cardElement.classList.add('animated');
+      /*  let prevX = this.mouseX;
+
+      document.addEventListener('mousemove', (e: MouseEvent) => {
+        if (e.clientX < prevX) {
+          cardElement.style.transform += ' skew(-55deg)';
+        } else {
+          cardElement.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(2deg)`;
+        }
+        prevX = e.clientX;
+      }); */
     }
   }
 
@@ -164,54 +144,24 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   // ! Выбрать цвет фона из data.ts
   getBackgroundColor(index: number): string {
     if (this.allItems[index]) {
-      return this.allItems[index].bgcolor || 'rgba(242, 242, 242, 1)'; // Цвет по умолчанию
+      return this.allItems[index].bgcolor || 'rgba(242, 242, 242, 1)'; // ? Цвет по умолчанию
     }
     return 'rgba(242, 242, 242, 1)';
   }
 
-  // * Принять индекс активного слайда
-  resetCardPositionsForCurrentSlide(activeSlideIndex: number) {
-    const currentSlideCards = document
-      .querySelectorAll('.swiper-slide')
-      [activeSlideIndex]?.querySelectorAll('.card');
-    if (currentSlideCards && currentSlideCards.length > 0) {
-      currentSlideCards.forEach((card) => {
-        const cardElement = card as HTMLElement;
-        const initialPosition = this.initialCardPositions.get(cardElement);
-        if (initialPosition) {
-          cardElement.style.left = initialPosition.left + 'px';
-          cardElement.style.top = initialPosition.top + 'px';
-        }
-      });
-    }
-  }
-
-  // * Вызов методов после изменения индекса слайда
+  // ! Вызов методов после изменения индекса слайда
   subscribeToSlideChange() {
     if (this.swiperElement && this.swiperElement.swiper) {
       this.swiper = this.swiperElement.swiper;
       this.swiperElement.swiper.on('slideChange', () => {
         const activeSlideIndex = this.swiperElement.swiper.activeIndex;
-        this.updateContainerBackgroundColor(activeSlideIndex); // обновить цвет фона
-        this.updateCardOnSlideChange(activeSlideIndex); // выбрать новую карточку на текущем слайде и применить к ней анимацию
-        /*  this.resetCardPositionsForCurrentSlide(activeSlideIndex); // вернуть карточку в исходное положение */
-        /* this.moveCardOnCurrentSlide(activeSlideIndex); */
+        this.updateContainerBackgroundColor(activeSlideIndex); // ? Обновить цвет фона
+        this.updateCardOnSlideChange(activeSlideIndex); // ? Выбрать новую карточку на текущем слайде и применить к ней анимацию
       });
     }
   }
 
   ngAfterViewInit() {
-    this.cards?.forEach((card, _index) => {
-      const cardElement = card.nativeElement;
-      const cardRect = cardElement.getBoundingClientRect();
-      this.initialCardPositions.set(cardElement, cardRect);
-    });
-
-    this.cards?.changes.subscribe(() => {
-      this.initializeCardPositions();
-    });
-    console.log('Cards changed:', this.cards);
-
     const swiperWrapper = document.querySelector('.swiper-wrapper');
     let currentSlideRect: DOMRect | null = null;
 
@@ -221,14 +171,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
         this.moveCardSmoothly(currentSlideRect);
       }
     }
-
-    // * Создание подписки на поток
-    this.slideChangeSubject.subscribe((activeSlideIndex: number) => {
-      this.updateCardOnSlideChange(activeSlideIndex);
-    });
-
-    // ! Инициализировать Swiper после отображения представления
-    /* const cardElement = this.cardWrapper.nativeElement.querySelector('.card'); */
 
     // ! Подписываемся на событие mousemove через Renderer2
     this.renderer.listen(
@@ -246,9 +188,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.card = this.elRef.nativeElement.querySelector('.card');
 
-    // ! Новая анимация карточки через Three.js
+    /*   // ! Анимация карточки через Three.js
 
-    /*  const scene = new THREE.Scene();
+    const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -288,10 +230,10 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     render(); */
 
-    // * Инициалилзировать изменения при смене слайда
+    // ! Инициалилзировать изменения при смене слайда
     this.subscribeToSlideChange();
 
-    // ! Исправление бага с верстикальным скролом
+    // ! Исправление бага с верстикальным скроллом
     this.swiperElement.swiper.on('sliderMove', () => {
       this.swiperActive = true;
     });
@@ -319,15 +261,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    // ! Отписываемся от события transitionEnd при уничтожении компонента
-    this.swiperElement.swiper.off('transitionEnd', this.handleTransitionEnd);
-
-    // * Очистка подписки
-
-    this.slideChangeSubject.unsubscribe();
-  }
-
   // ! Обработчик завершения анимации перехода слайда
   handleTransitionEnd = () => {
     this.card = null;
@@ -351,7 +284,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   // ! Посчитать текущий результат от общей цели в процентах
   calculatePercentage(item: GoalItem): any {
     let percent = (currentAmount / item.goal) * 100;
-    // ! Если больше 100, сани не уедут за правый край
+    // ? Если больше 100, сани не уедут за правый край
     if (percent > 100) {
       percent = 100;
     }
