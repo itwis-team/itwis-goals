@@ -12,7 +12,6 @@ import {
 import { SwiperOptions, Swiper } from 'swiper';
 import { GoalItem } from '../../types/GoalItem';
 import { allItems, currentAmount } from '../../data/data';
-import * as THREE from 'three';
 
 @Component({
   selector: 'app-main',
@@ -126,6 +125,8 @@ export class MainComponent implements OnInit, AfterViewInit {
       const areaWidth = cardElement.offsetWidth * 2;
       const areaHeight = cardElement.offsetHeight * 1.5;
 
+      // ? Ограничение пространства перемещения .card
+
       const minX = window.innerWidth * -0.39;
       const minY = window.innerHeight * -0.39;
       const maxX = areaWidth + 30;
@@ -195,47 +196,6 @@ export class MainComponent implements OnInit, AfterViewInit {
     );
 
     this.card = this.elRef.nativeElement.querySelector('.card');
-
-    /*  // ! Анимация карточки через Three.js (не работает)
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      10000
-    );
-    camera.position.z = Math.round(10000 / 20);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    this.elRef.nativeElement.appendChild(renderer.domElement);
-
-    const mouse = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
-    document.addEventListener('mousemove', (event) => {
-      mouse.x = (event.clientX / window.innerWidth) * 10 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 10 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(scene.children);
-
-      if (intersects.length > 0) {
-        const obj = intersects[0].object;
-        if (obj && this.card) {
-          this.renderer.setStyle(
-            this.card,
-            'transform',
-            `translate(${mouse.x * 100}px, ${mouse.y * 100}px)`
-          );
-        }
-      }
-    });
-
-    const render = () => {
-      requestAnimationFrame(render);
-    };
-    render(); */
 
     // ! Инициалилзировать изменения при смене слайда
     this.subscribeToSlideChange();
