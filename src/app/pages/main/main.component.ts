@@ -114,12 +114,6 @@ export class MainComponent implements OnInit, AfterViewInit {
       let newLeft = offsetX;
       let newTop = offsetY;
 
-      // ? Логика ограничения
-      /*   const maxX = currentSlideRect.width - cardElement.offsetWidth;
-      const maxY = currentSlideRect.height - cardElement.offsetHeight;
-      newLeft = Math.min(Math.max(newLeft, 0), maxX);
-      newTop = Math.min(Math.max(newTop, 0), maxY); */
-
       cardElement.style.transform = `translate(${newLeft}px, ${newTop}px)`;
     }
 
@@ -131,14 +125,6 @@ export class MainComponent implements OnInit, AfterViewInit {
 
       const areaWidth = cardElement.offsetWidth * 2;
       const areaHeight = cardElement.offsetHeight * 1.5;
-
-      function vw(percent: number) {
-        let w = Math.max(
-          document.documentElement.clientWidth,
-          window.innerWidth || 0
-        );
-        return (percent * w) / -100;
-      }
 
       const minX = window.innerWidth * -0.39;
       const minY = window.innerHeight * -0.39;
