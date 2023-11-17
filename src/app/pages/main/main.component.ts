@@ -108,13 +108,45 @@ export class MainComponent implements OnInit, AfterViewInit {
     if (this.card && currentSlideRect) {
       const cardElement = this.card as HTMLElement;
 
-      // ? Получаем координаты курсора относительно .card
       const offsetX = this.mouseX - cardElement.offsetWidth * 2.7;
       const offsetY = this.mouseY - cardElement.offsetHeight;
 
-      // ? Координаты .card без ограничений рамками страницы
-      const newLeft = offsetX;
-      const newTop = offsetY;
+      let newLeft = offsetX;
+      let newTop = offsetY;
+
+      // ? Логика ограничения
+      /*   const maxX = currentSlideRect.width - cardElement.offsetWidth;
+      const maxY = currentSlideRect.height - cardElement.offsetHeight;
+      newLeft = Math.min(Math.max(newLeft, 0), maxX);
+      newTop = Math.min(Math.max(newTop, 0), maxY); */
+
+      cardElement.style.transform = `translate(${newLeft}px, ${newTop}px)`;
+    }
+
+    if (this.card && currentSlideRect) {
+      const cardElement = this.card as HTMLElement;
+
+      const offsetX = this.mouseX - cardElement.offsetWidth * 2.7;
+      const offsetY = this.mouseY - cardElement.offsetHeight;
+
+      const areaWidth = cardElement.offsetWidth * 2;
+      const areaHeight = cardElement.offsetHeight * 1.5;
+
+      function vw(percent: number) {
+        let w = Math.max(
+          document.documentElement.clientWidth,
+          window.innerWidth || 0
+        );
+        return (percent * w) / -100;
+      }
+
+      const minX = window.innerWidth * -0.39;
+      const minY = window.innerHeight * -0.39;
+      const maxX = areaWidth + 30;
+      const maxY = areaHeight + 30;
+
+      const newLeft = Math.min(Math.max(offsetX, minX), maxX);
+      const newTop = Math.min(Math.max(offsetY, minY), maxY);
 
       cardElement.style.transform = `translate(${newLeft}px, ${newTop}px)`;
     }
