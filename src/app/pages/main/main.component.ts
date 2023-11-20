@@ -104,8 +104,6 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   // ! Логика анимации карточки
   moveCardSmoothly(currentSlideRect: DOMRect | null) {
-    console.log(window.innerWidth);
-
     if (this.card && currentSlideRect) {
       const cardElement = this.card as HTMLElement;
 
@@ -119,16 +117,24 @@ export class MainComponent implements OnInit, AfterViewInit {
 
       if (window.innerWidth > 1919) {
         minWidthFraction = 0.39;
-      } else if (window.innerWidth < 744) {
-        minWidthFraction = 0.15;
+      } else if (window.innerWidth < 1440 && window.innerWidth > 900) {
+        minWidthFraction = 0.2;
+      } else if (window.innerWidth < 900 && window.innerWidth > 744) {
+        minWidthFraction = 0.05;
+      } else if (window.innerWidth < 744 && window.innerWidth > 380) {
+        minWidthFraction = 0.02;
+      } else if (window.innerWidth < 380 && window.innerWidth > 344) {
+        minWidthFraction = 0.015;
       } else if (window.innerWidth < 344) {
-        minWidthFraction = 0.07;
+        minWidthFraction = 0.007;
       } else {
-        minWidthFraction = 0.39;
+        const screenWidth = window.innerWidth;
+        minWidthFraction = (screenWidth / 1919) * 0.39;
+        minWidthFraction = Math.max(minWidthFraction, 0.07);
       }
 
       const minX = window.innerWidth * -minWidthFraction;
-      const minY = window.innerHeight * -0.39;
+      const minY = window.innerHeight * -0.09;
       const maxX = areaWidth + 30;
       const maxY = areaHeight + 30;
 
@@ -164,7 +170,9 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.swiper = this.swiperElement.swiper;
       this.swiperElement.swiper.on('slideChange', () => {
         const activeSlideIndex = this.swiperElement.swiper.activeIndex;
-        this.updateContainerBackgroundColor(activeSlideIndex); // ? Обновить цвет фона
+        setTimeout(() => {
+          this.updateContainerBackgroundColor(activeSlideIndex); // ? Обновить цвет фона
+        }, 1200);
         this.updateCardOnSlideChange(activeSlideIndex); // ? Выбрать новую карточку на текущем слайде и применить к ней анимацию
       });
     }
@@ -184,7 +192,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     // ! Подписываемся на событие mousemove через Renderer2
     this.renderer.listen(
       this.elRef.nativeElement,
-      'mousemove',
+      'mousemove' || 'touchmove',
       (e: MouseEvent) => {
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
