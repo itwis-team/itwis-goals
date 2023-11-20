@@ -62,6 +62,7 @@
     visibility: hidden;
     opacity: 0;
     transition: 0.5s ease-in-out;
+    display: none;
   }
 
   .slider__wrapper {
@@ -98,6 +99,9 @@
     }
 
     &-prev {
+      opacity: 1;
+      visibility: visible;
+      transition: all 0.4s ease;
       width: 48px;
       height: 48px;
       cursor: pointer;
@@ -114,6 +118,9 @@
     }
 
     &-next {
+      opacity: 1;
+      visibility: visible;
+      transition: all 0.4s ease;
       width: 48px;
       height: 48px;
       cursor: pointer;

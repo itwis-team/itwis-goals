@@ -102,7 +102,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // ! Логика анимации карточки
+  // ! Логика анимации карточки за курсором
   moveCardSmoothly(currentSlideRect: DOMRect | null) {
     if (this.card && currentSlideRect) {
       const cardElement = this.card as HTMLElement;
@@ -189,13 +189,28 @@ export class MainComponent implements OnInit, AfterViewInit {
       }
     }
 
-    // ! Подписываемся на событие mousemove через Renderer2
+    // ! Подписываемся на события mousemove и touchmove через Renderer2
     this.renderer.listen(
       this.elRef.nativeElement,
-      'mousemove' || 'touchmove',
+      'mousemove',
       (e: MouseEvent) => {
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
+
+        if (!this.isCardMoving && currentSlideRect) {
+          this.moveCardSmoothly(currentSlideRect);
+        }
+      }
+    );
+
+    this.renderer.listen(
+      this.elRef.nativeElement,
+      'touchmove',
+      (e: TouchEvent) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        this.mouseX = touch.clientX;
+        this.mouseY = touch.clientY;
 
         if (!this.isCardMoving && currentSlideRect) {
           this.moveCardSmoothly(currentSlideRect);
